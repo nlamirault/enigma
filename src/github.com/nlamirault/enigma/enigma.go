@@ -19,6 +19,7 @@ import (
 	"flag"
 	"log"
 	"os"
+	// "strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awsutil"
@@ -32,6 +33,11 @@ var (
 	printEnigmaSecrets bool
 	doCreateBucket     bool
 	doDeleteBucket     bool
+	doPutText          bool
+	doGetText          bool
+	text               string
+	key                string
+	file               string
 )
 
 func init() {
@@ -39,6 +45,10 @@ func init() {
 	flag.StringVar(&region, "region", "eu-west-1", "aws region")
 	flag.BoolVar(&doCreateBucket, "create", false, "create bucket")
 	flag.BoolVar(&doDeleteBucket, "delete", false, "delete bucket")
+	flag.BoolVar(&doPutText, "put-text", false, "store text")
+	flag.BoolVar(&doGetText, "get-text", false, "retrieve text")
+	flag.StringVar(&text, "text", "", "text to store")
+	flag.StringVar(&key, "key", "", "key for store data")
 	flag.BoolVar(&printEnigmaSecrets, "list", false, "print files")
 	flag.BoolVar(&printVersion, "version", false, "print version and exit")
 }
@@ -50,21 +60,34 @@ func main() {
 		os.Exit(0)
 	}
 	if printEnigmaSecrets {
-		checkArgument(region, "S3 region")
-		checkArgument(bucket, "S3 bucket")
+		// checkArgument(region, "S3 region")
+		// checkArgument(bucket, "S3 bucket")
 		listEnigmaSecrets()
 		os.Exit(0)
 	}
 	if doCreateBucket {
-		checkArgument(region, "S3 region")
-		checkArgument(bucket, "S3 bucket")
+		// checkArgument(region, "S3 region")
+		// checkArgument(bucket, "S3 bucket")
 		createBucket()
 	}
 	if doDeleteBucket {
-		checkArgument(region, "S3 region")
-		checkArgument(bucket, "S3 bucket")
+		// checkArgument(region, "S3 region")
+		// checkArgument(bucket, "S3 bucket")
 		deleteBucket()
 	}
+	if doPutText {
+		checkArgument(text, "an input text to store")
+		checkArgument(key, "a key name for data")
+		putText()
+	}
+	if doGetText {
+		checkArgument(key, "a key name for data")
+		getText()
+	}
+}
+
+func getKeyID() string {
+	return os.Getenv("ENIGMA_KEYID")
 }
 
 func checkArgument(key string, value string) {
@@ -80,7 +103,7 @@ func getAWSConfig(region string) *aws.Config {
 }
 
 func createBucket() {
-	log.Println("Create bucket")
+	log.Printf("Create bucket : %s\n", bucket)
 	s3Client := getS3Client(getAWSConfig(region))
 	result, err := s3Client.CreateBucket(&s3.CreateBucketInput{
 		Bucket: &bucket,
@@ -135,3 +158,62 @@ func listEnigmaSecrets() {
 		log.Println("Object: ", key)
 	}
 }
+
+func putText() {
+	log.Printf("Encrypt text %s with key %s\n", text, key)
+	cfg := getAWSConfig(region)
+	keyID := getKeyID()
+
+	encrypted, err := encrypt(getKmsClient(cfg), keyID, []byte(text))
+	if err != nil {
+		log.Printf("Can't encrypt : %v\n", err)
+		return
+	}
+	log.Println("Encrypted: ", encrypted)
+
+	_, err = storeText(getS3Client(cfg), bucket, key, string(encrypted))
+	if err != nil {
+		log.Printf("Failed to upload data to %s %v\n,",
+			bucket, err)
+		return
+	}
+	// log.Println(awsutil.Prettify(result))
+	log.Printf("Successfully uploaded data with key %s\n", key)
+}
+
+func getText() {
+	log.Printf("Retrive text for key : %s\n", key)
+	cfg := getAWSConfig(region)
+	blob, err := retrieveText(getS3Client(cfg), bucket, key)
+	if err != nil {
+		log.Printf("Failed to upload data to %s %v\n,",
+			bucket, err)
+		return
+	}
+	decrypted, err := decrypt(getKmsClient(cfg), &blob)
+	if err != nil {
+		log.Printf("Can't decrypt data: %v\n", err)
+		return
+	}
+	log.Printf("Successfully decrypted: %s\n", decrypted)
+}
+
+// func putFile {
+// 	s3Client := getS3Client(cfg)
+// 	file, err := os.Open(path)
+// 	if err != nil {
+// 		log.Println("Failed opening file", path, err)
+// 		continue
+// 	}
+// 	result, err := s3Client.PutObject(&s3.PutObjectInput{
+// 		Bucket: &bucket,
+// 		Key:    aws.String(rel),
+// 		Body:   file,
+// 	})
+// 	if err != nil {
+// 		log.Fatalln("Failed to upload data to %s/%s,",
+// 			bucket, path, err)
+// 		return
+// 	}
+// 	log.Printf("Uploaded: %s : %s\n", path, result)
+// }

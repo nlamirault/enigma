@@ -16,6 +16,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
@@ -26,10 +28,10 @@ func getS3Client(cfg *aws.Config) *s3.S3 {
 	return c
 }
 
-func listObjects(c *s3.S3, b string) ([]string, error) {
+func listObjects(s3Client *s3.S3, bucket string) ([]string, error) {
 	l := make([]string, 0)
-	resp, err := c.ListObjects(&s3.ListObjectsInput{
-		Bucket: aws.String(b),
+	resp, err := s3Client.ListObjects(&s3.ListObjectsInput{
+		Bucket: aws.String(bucket),
 	})
 	if err != nil {
 		return l, err
@@ -40,4 +42,25 @@ func listObjects(c *s3.S3, b string) ([]string, error) {
 		//}
 	}
 	return l, nil
+}
+
+func storeText(s3Client *s3.S3, bucket string, key string, text string) (*s3.PutObjectOutput, error) {
+	return s3Client.PutObject(&s3.PutObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+		Body:   strings.NewReader(text),
+	})
+}
+
+func retrieveText(s3Client *s3.S3, bucket string, key string) ([]byte, error) {
+	resp, err := s3Client.GetObject(&s3.GetObjectInput{
+		Bucket: aws.String(bucket),
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		return nil, err
+	}
+	blob := make([]byte, *resp.ContentLength)
+	_, err = resp.Body.Read(blob)
+	return blob, nil
 }
