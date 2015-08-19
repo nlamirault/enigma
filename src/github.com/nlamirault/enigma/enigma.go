@@ -25,8 +25,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-const Version = "0.1.0"
-
 var (
 	bucket             string
 	region             string
