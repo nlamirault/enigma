@@ -36,7 +36,7 @@ var (
 
 func init() {
 	flag.StringVar(&bucket, "bucket", "enigma", "s3 bucket name")
-	flag.StringVar(&region, "region", "", "aws region")
+	flag.StringVar(&region, "region", "eu-west-1", "aws region")
 	flag.BoolVar(&doCreateBucket, "create", false, "create bucket")
 	flag.BoolVar(&doDeleteBucket, "delete", false, "delete bucket")
 	flag.BoolVar(&printEnigmaSecrets, "list", false, "print files")

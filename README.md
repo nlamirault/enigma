@@ -1,17 +1,31 @@
-Enigma
-=======
+# Enigma
 
 This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
 
-## Install
+## Usage
 
-* Install dependencies :
+Creates a KMS key via the AWS Console and store its ID (a UUID) in an environment variable:
 
-        $ go get -u github.com/aws/aws-sdk-go/...
+    $ export ENIGMA_KEYID = "be3338c8-4e4e-2384-644f-1ac0af044fe4"
+
+Initialize your bucket into S3 :
+
+    $ enigma create
+
+
+## Development
+
+* Initialize environment
+
+        $ make init
 
 * Build tool :
 
-		$ go build .
+        $ make build
+
+* Launch unit tests :
+
+        $ make test
 
 ## Contributing
 
