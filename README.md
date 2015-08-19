@@ -34,7 +34,7 @@ See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## License
 
-See [LICENSE][] for the complete license.
+See [LICENSE](LICENSE) for the complete license.
 
 
 ## Changelog
