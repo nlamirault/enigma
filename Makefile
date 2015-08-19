@@ -52,7 +52,7 @@ help:
 
 clean:
 	@echo -e "$(OK_COLOR)[$(APP)] Cleanup$(NO_COLOR)"
-	@rm -f $(EXE) $(APP)-*.tar.gz
+	@rm -f $(APP)_* $(APP)-*.tar.gz
 
 .PHONY: init
 init:
