@@ -28,13 +28,14 @@ const (
 	plaintext  = "In tartiflette we trust !"
 )
 
-func Test_Enigma(t *testing.T) {
+func Test_EnigmaKms(t *testing.T) {
 
 	var cfg *aws.Config
 	cfg = &aws.Config{Region: aws.String(testregion)}
 
 	kmsClient := getKmsClient(cfg)
 	keyID := os.Getenv("ENIGMA_KEYID")
+
 	// Encrypt plaintext
 	encrypted, err := encrypt(kmsClient, keyID, []byte(plaintext))
 	if err != nil {
