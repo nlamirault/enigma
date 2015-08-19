@@ -41,7 +41,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&bucket, "bucket", "enigma", "s3 bucket name")
+	flag.StringVar(&bucket, "bucket", "", "s3 bucket name")
 	flag.StringVar(&region, "region", "eu-west-1", "aws region")
 	flag.BoolVar(&doCreateBucket, "create", false, "create bucket")
 	flag.BoolVar(&doDeleteBucket, "delete", false, "delete bucket")
@@ -61,18 +61,18 @@ func main() {
 	}
 	if printEnigmaSecrets {
 		// checkArgument(region, "S3 region")
-		// checkArgument(bucket, "S3 bucket")
+		checkArgument(bucket, "S3 bucket")
 		listEnigmaSecrets()
 		os.Exit(0)
 	}
 	if doCreateBucket {
 		// checkArgument(region, "S3 region")
-		// checkArgument(bucket, "S3 bucket")
+		checkArgument(bucket, "S3 bucket")
 		createBucket()
 	}
 	if doDeleteBucket {
 		// checkArgument(region, "S3 region")
-		// checkArgument(bucket, "S3 bucket")
+		checkArgument(bucket, "S3 bucket")
 		deleteBucket()
 	}
 	if doPutText {
