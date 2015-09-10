@@ -5,10 +5,10 @@ machine:
 dependencies:
   override:
     - docker info
+    - make init
 
 test:
   override:
-    - make init
     - make build
     - make test
     - make lint
