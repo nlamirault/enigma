@@ -4,12 +4,11 @@
 
 dependencies:
   override:
-    # - docker info
     - go version
-    - make init
 
 test:
   override:
+    - make init
     - make build
     - make test
     - make lint
