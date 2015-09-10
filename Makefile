@@ -65,8 +65,9 @@ init:
 #	@go get -u github.com/golang/glog
 	@go install -v github.com/constabulary/gb/...
 #	@go get -u github.com/constabulary/gb/...
-	@go get -u github.com/golang/lint/golint
-	@go get -u github.com/kisielk/errcheck
+#	@go get -u github.com/golang/lint/golint
+	@go install -v github.com/golang/lint/golint
+#	@go get -u github.com/kisielk/errcheck
 
 .PHONY: build
 build:
