@@ -7,6 +7,8 @@ dependencies:
     - rm -f ~/.gitconfig
   override:
     - go version
+    - go get -u github.com/constabulary/gb/...
+    - go get -u github.com/golang/lint/golint
 
 test:
   override:
