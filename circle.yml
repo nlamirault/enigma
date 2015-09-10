@@ -3,6 +3,8 @@
 #     - docker
 
 dependencies:
+  pre:
+    - rm -f ~/.gitconfig
   override:
     - go version
 
