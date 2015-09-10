@@ -62,10 +62,8 @@ clean:
 .PHONY: init
 init:
 	@echo -e "$(OK_COLOR)[$(APP)] Install requirements$(NO_COLOR)"
-#	@go get -u github.com/golang/glog
 	@go get github.com/constabulary/gb/...
 	@go get github.com/golang/lint/golint
-#	@go get -u github.com/kisielk/errcheck
 
 .PHONY: build
 build:
