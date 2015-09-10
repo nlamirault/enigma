@@ -63,7 +63,8 @@ clean:
 init:
 	@echo -e "$(OK_COLOR)[$(APP)] Install requirements$(NO_COLOR)"
 	@go get -u github.com/golang/glog
-	@go get -u github.com/constabulary/gb/...
+	@go install -v github.com/constabulary/gb/...
+#	@go get -u github.com/constabulary/gb/...
 	@go get -u github.com/golang/lint/golint
 	@go get -u github.com/kisielk/errcheck
 
