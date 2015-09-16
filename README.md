@@ -1,5 +1,7 @@
 # Enigma
 
+[![Circle CI](https://circleci.com/gh/nlamirault/enigma.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma)
+
 This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
 
 ## Usage

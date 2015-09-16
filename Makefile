@@ -21,7 +21,7 @@ DIR = $(shell pwd)
 
 DOCKER = docker
 
-GB=$(GOPATH)/bin/gb
+GB = gb
 
 NO_COLOR=\033[0m
 OK_COLOR=\033[32;01m
@@ -62,8 +62,10 @@ clean:
 .PHONY: init
 init:
 	@echo -e "$(OK_COLOR)[$(APP)] Install requirements$(NO_COLOR)"
+	@go get -u github.com/golang/glog
 	@go get -u github.com/constabulary/gb/...
 	@go get -u github.com/golang/lint/golint
+	@go get -u github.com/kisielk/errcheck
 
 .PHONY: build
 build:
@@ -77,14 +79,17 @@ test:
 
 .PHONY: lint
 lint:
+	@echo -e "$(OK_COLOR)[$(APP)] go lint $(NO_COLOR)"
 	@$(foreach file,$(SRCS),golint $(file) || exit;)
 
 .PHONY: vet
 vet:
+	@echo -e "$(OK_COLOR)[$(APP)] go vet $(NO_COLOR)"
 	@$(foreach file,$(SRCS),go vet $(file) || exit;)
 
 .PHONY: coverage
 coverage:
+	@echo -e "$(OK_COLOR)[$(APP)] Code coverage $(NO_COLOR)"
 	@$(foreach pkg,$(PKGS),env GOPATH=`pwd`:`pwd`/vendor go test -cover $(pkg) || exit;)
 
 .PHONY: release
