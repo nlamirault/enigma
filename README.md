@@ -1,8 +1,16 @@
 # Enigma
 
-[![Circle CI](https://circleci.com/gh/nlamirault/enigma.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma)
+[![License Apache 2][badge-license]](LICENSE)
+[![GitHub version](https://badge.fury.io/gh/nlamirault%2Fenigma.svg)](https://badge.fury.io/gh/nlamirault%2Fenigma)
 
 This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
+
+Master :
+* [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/master.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/master)
+
+Develop :
+* [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/develop.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/develop)
+
 
 ## Usage
 
@@ -78,6 +86,7 @@ A [changelog](ChangeLog.md) is available
 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 
+[badge-license]: https://img.shields.io/badge/license-Apache2-green.svg?style=flat
 
 [Amazon S3]:https://aws.amazon.com/s3/
 [Amazon KMS]: https://aws.amazon.com/kms/
