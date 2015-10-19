@@ -12,35 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package command
 
 import (
-	"fmt"
-	"os"
+	"testing"
 
 	"github.com/mitchellh/cli"
-
-	"github.com/nlamirault/enigma/version"
 )
 
-func main() {
-	os.Exit(realMain())
-}
-
-func realMain() int {
-	cli := &cli.CLI{
-		Args:       os.Args[1:],
-		Commands:   Commands,
-		HelpFunc:   cli.BasicHelpFunc("enigma"),
-		HelpWriter: os.Stdout,
-		Version:    version.Version,
+func TestSecretWithoutAction(t *testing.T) {
+	ui := new(cli.MockUi)
+	c := &SecretCommand{
+		UI: ui,
 	}
 
-	exitCode, err := cli.Run()
-	if err != nil {
-		Ui.Error(fmt.Sprintf("Error executing CLI: %s", err.Error()))
-		return 1
+	args := []string{
+		"--debug", "true",
+		"--action", "foo",
 	}
 
-	return exitCode
+	if code := c.Run(args); code != 0 {
+		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+	}
 }

@@ -12,35 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package logging
 
 import (
-	"fmt"
+	//"fmt"
+	"log"
 	"os"
 
-	"github.com/mitchellh/cli"
-
-	"github.com/nlamirault/enigma/version"
+	"github.com/hashicorp/logutils"
 )
 
-func main() {
-	os.Exit(realMain())
-}
-
-func realMain() int {
-	cli := &cli.CLI{
-		Args:       os.Args[1:],
-		Commands:   Commands,
-		HelpFunc:   cli.BasicHelpFunc("enigma"),
-		HelpWriter: os.Stdout,
-		Version:    version.Version,
+// SetLogging initialize logging
+func SetLogging(level string) *logutils.LevelFilter {
+	filter := &logutils.LevelFilter{
+		Levels:   []logutils.LogLevel{"DEBUG", "INFO", "WARN", "ERROR", "FATAL"},
+		MinLevel: logutils.LogLevel(level),
+		Writer:   os.Stderr,
 	}
-
-	exitCode, err := cli.Run()
-	if err != nil {
-		Ui.Error(fmt.Sprintf("Error executing CLI: %s", err.Error()))
-		return 1
-	}
-
-	return exitCode
+	log.SetOutput(filter)
+	return filter
 }

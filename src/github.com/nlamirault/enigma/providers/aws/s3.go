@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package aws
 
 import (
 	"strings"
@@ -21,13 +21,13 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-// func getS3Client return S3 service client
-func getS3Client(cfg *aws.Config) *s3.S3 {
+// GetS3Client return S3 service client
+func GetS3Client(cfg *aws.Config) *s3.S3 {
 	c := s3.New(cfg)
 	return c
 }
 
-func listObjects(s3Client *s3.S3, bucket string) ([]string, error) {
+func ListObjects(s3Client *s3.S3, bucket string) ([]string, error) {
 	var l []string
 	resp, err := s3Client.ListObjects(&s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
@@ -43,7 +43,7 @@ func listObjects(s3Client *s3.S3, bucket string) ([]string, error) {
 	return l, nil
 }
 
-func storeText(s3Client *s3.S3, bucket string, key string, text string) (*s3.PutObjectOutput, error) {
+func StoreText(s3Client *s3.S3, bucket string, key string, text string) (*s3.PutObjectOutput, error) {
 	return s3Client.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
@@ -51,7 +51,7 @@ func storeText(s3Client *s3.S3, bucket string, key string, text string) (*s3.Put
 	})
 }
 
-func retrieveText(s3Client *s3.S3, bucket string, key string) ([]byte, error) {
+func RetrieveText(s3Client *s3.S3, bucket string, key string) ([]byte, error) {
 	resp, err := s3Client.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),

@@ -15,32 +15,45 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/mitchellh/cli"
 
-	"github.com/nlamirault/enigma/version"
+	"github.com/nlamirault/enigma/command"
 )
 
-func main() {
-	os.Exit(realMain())
+// Commands is the mapping of all the available Terraform commands.
+var (
+	Commands map[string]cli.CommandFactory
+	Ui       cli.Ui
+)
+
+type Meta struct {
+	UI cli.Ui
 }
 
-func realMain() int {
-	cli := &cli.CLI{
-		Args:       os.Args[1:],
-		Commands:   Commands,
-		HelpFunc:   cli.BasicHelpFunc("enigma"),
-		HelpWriter: os.Stdout,
-		Version:    version.Version,
+func init() {
+	Ui = &cli.ColoredUi{
+		Ui: &cli.BasicUi{
+			Writer:      os.Stdout,
+			Reader:      os.Stdin,
+			ErrorWriter: os.Stderr,
+		},
+		OutputColor: cli.UiColorNone,
+		InfoColor:   cli.UiColorGreen,
+		ErrorColor:  cli.UiColorRed,
 	}
 
-	exitCode, err := cli.Run()
-	if err != nil {
-		Ui.Error(fmt.Sprintf("Error executing CLI: %s", err.Error()))
-		return 1
+	Commands = map[string]cli.CommandFactory{
+		"bucket": func() (cli.Command, error) {
+			return &command.BucketCommand{
+				UI: Ui,
+			}, nil
+		},
+		"secret": func() (cli.Command, error) {
+			return &command.SecretCommand{
+				UI: Ui,
+			}, nil
+		},
 	}
-
-	return exitCode
 }

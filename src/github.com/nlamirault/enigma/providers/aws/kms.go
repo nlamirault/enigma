@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package aws
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/kms"
 )
 
-// Function getKmsClient returns KMS service client
-func getKmsClient(cfg *aws.Config) *kms.KMS {
+// GetKmsClient returns KMS service client
+func GetKmsClient(cfg *aws.Config) *kms.KMS {
 	c := kms.New(cfg)
 	return c
 }
 
-func decrypt(kmsClient *kms.KMS, ciphertext *[]byte) ([]byte, error) {
+func Decrypt(kmsClient *kms.KMS, ciphertext *[]byte) ([]byte, error) {
 	resp, err := kmsClient.Decrypt(&kms.DecryptInput{
 		CiphertextBlob: *ciphertext,
 	})
@@ -35,7 +35,7 @@ func decrypt(kmsClient *kms.KMS, ciphertext *[]byte) ([]byte, error) {
 	return resp.Plaintext, nil
 }
 
-func encrypt(kmsClient *kms.KMS, keyID string, plaintext []byte) ([]byte, error) {
+func Encrypt(kmsClient *kms.KMS, keyID string, plaintext []byte) ([]byte, error) {
 	resp, err := kmsClient.Encrypt(&kms.EncryptInput{
 		Plaintext: plaintext,
 		KeyId:     aws.String(keyID),
