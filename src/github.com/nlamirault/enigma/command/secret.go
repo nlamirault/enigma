@@ -130,7 +130,7 @@ func (c *SecretCommand) doPutText(config *aws.Config, bucket string, key string,
 		c.UI.Error(err.Error())
 		return
 	}
-	log.Printf("[DEBUG] Encrypted: ", encrypted)
+	log.Printf("[DEBUG] Encrypted: %v", encrypted)
 	result, err := eaws.StoreText(
 		eaws.GetS3Client(config), bucket, key, string(encrypted))
 	if err != nil {
