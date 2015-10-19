@@ -28,7 +28,7 @@ func getS3Client(cfg *aws.Config) *s3.S3 {
 }
 
 func listObjects(s3Client *s3.S3, bucket string) ([]string, error) {
-	l := make([]string, 0)
+	var l []string
 	resp, err := s3Client.ListObjects(&s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
 	})
