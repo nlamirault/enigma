@@ -34,6 +34,9 @@ func Test_EnigmaKms(t *testing.T) {
 
 	kmsClient := getKmsClient(cfg)
 	keyID := os.Getenv("ENIGMA_KEYID")
+	if len(keyID) == 0 {
+		t.Fatalf("ENIGMA_KEYID not found")
+	}
 
 	// Encrypt plaintext
 	encrypted, err := encrypt(kmsClient, keyID, []byte(plaintext))
