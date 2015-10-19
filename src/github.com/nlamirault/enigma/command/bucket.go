@@ -146,7 +146,7 @@ func (c *BucketCommand) doDeleteBucket(config *aws.Config, bucket string) {
 	}
 	log.Printf("[DEBUG] Delete bucket objects")
 	for _, key := range list {
-		_, err := s3Client.DeleteObject(&s3.DeleteObjectInput{
+		res, err := s3Client.DeleteObject(&s3.DeleteObjectInput{
 			Bucket: &bucket,
 			Key:    aws.String(key),
 		})
@@ -154,6 +154,7 @@ func (c *BucketCommand) doDeleteBucket(config *aws.Config, bucket string) {
 			c.UI.Error(err.Error())
 			return
 		}
+		log.Printf("[DEBUG] %s", awsutil.Prettify(res))
 	}
 	log.Printf("[DEBUG] Delete bucket")
 	result, err := s3Client.DeleteBucket(&s3.DeleteBucketInput{

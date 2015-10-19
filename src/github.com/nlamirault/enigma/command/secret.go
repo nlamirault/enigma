@@ -82,6 +82,15 @@ func (c *SecretCommand) Run(args []string) int {
 	action := args[0]
 	//fmt.Printf("Action: %s\n", action)
 	switch action {
+	case "delete":
+		valid := checkArguments(bucket, region, key)
+		if !valid {
+			f.Usage()
+			c.UI.Error(fmt.Sprintf(
+				"\nSecret expects arguments: bucket, region and key."))
+			return 1
+		}
+		c.doDelete(config, bucket, key)
 	case "put-text":
 		valid := checkArguments(bucket, region, key, text)
 		if !valid {
@@ -107,7 +116,7 @@ func (c *SecretCommand) Run(args []string) int {
 }
 
 func (c *SecretCommand) doGetText(config *aws.Config, bucket string, key string) {
-	c.UI.Info(fmt.Sprintf("Retrive text for key : %s", key))
+	c.UI.Info(fmt.Sprintf("Retrive secret text for key : %s", key))
 	blob, err := eaws.RetrieveText(eaws.GetS3Client(config), bucket, key)
 	if err != nil {
 		c.UI.Error(err.Error())
@@ -123,7 +132,7 @@ func (c *SecretCommand) doGetText(config *aws.Config, bucket string, key string)
 }
 
 func (c *SecretCommand) doPutText(config *aws.Config, bucket string, key string, text string) {
-	c.UI.Info(fmt.Sprintf("Encrypt text %s with key %s", text, key))
+	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
 	keyID := getKeyID()
 	encrypted, err := eaws.Encrypt(eaws.GetKmsClient(config), keyID, []byte(text))
 	if err != nil {
@@ -160,4 +169,19 @@ func (c *SecretCommand) doPutFile(config *aws.Config, bucket string, key string,
 	}
 	log.Printf("[DEBUG] %s", awsutil.Prettify(result))
 	c.UI.Output(fmt.Sprintf("Uploaded: %s : %s", path, result))
+}
+
+func (c *SecretCommand) doDelete(config *aws.Config, bucket string, key string) {
+	c.UI.Info(fmt.Sprintf("Delete secret with key %s", key))
+	s3Client := eaws.GetS3Client(config)
+	result, err := s3Client.DeleteObject(&s3.DeleteObjectInput{
+		Bucket: &bucket,
+		Key:    aws.String(key),
+	})
+	if err != nil {
+		c.UI.Error(err.Error())
+		return
+	}
+	log.Printf("[DEBUG] %s", awsutil.Prettify(result))
+	c.UI.Output("Deleted")
 }
