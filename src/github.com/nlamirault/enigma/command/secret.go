@@ -15,19 +15,19 @@
 package command
 
 import (
-	// "flag"
-	// "fmt"
-	// "log"
-	// "os"
+	"flag"
+	"fmt"
+	"log"
+	//"os"
 	"strings"
 
-	// "github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws"
 	// "github.com/aws/aws-sdk-go/aws/awsutil"
 	// "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/mitchellh/cli"
 
 	"github.com/nlamirault/enigma/keys"
-	"github.com/nlamirault/enigma/store"
+	//"github.com/nlamirault/enigma/store"
 )
 
 type SecretCommand struct {
@@ -47,8 +47,10 @@ Secret options:
         --key=key                     Key for text
 
 Action :
-        put-text                      Put a secret text
-        get-text                      Retrieve a secret text
+        list                     List all secrets
+        put                      Put a secret
+        get                      Retrieve a secret
+        delete                   Delete a secret
 `
 	return strings.TrimSpace(helpText)
 }
@@ -79,17 +81,27 @@ func (c *SecretCommand) Run(args []string) int {
 		f.Usage()
 		return 1
 	}
+
+	client, err := NewClient("kms", "s3")
+	if err != nil {
+		c.UI.Error(err.Error())
+		return 1
+	}
+
 	config := getAWSConfig(region, debug)
 	action := args[0]
 	//fmt.Printf("Action: %s\n", action)
 
-	manager, err := keys.New(keysManager)
-	if err != nil {
-		c.UI.Error(err)
-		return 1
-	}
-
 	switch action {
+	case "list":
+		valid := checkArguments(bucket, region)
+		if !valid {
+			f.Usage()
+			c.UI.Error(fmt.Sprintf(
+				"\nSecret expects arguments: bucket and region."))
+			return 1
+		}
+		c.doList(client, config, bucket)
 	case "delete":
 		valid := checkArguments(bucket, region, key)
 		if !valid {
@@ -98,8 +110,8 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: bucket, region and key."))
 			return 1
 		}
-		c.doDelete(config, bucket, key)
-	case "put-text":
+		c.doDelete(client, config, bucket, key)
+	case "put":
 		valid := checkArguments(bucket, region, key, text)
 		if !valid {
 			f.Usage()
@@ -107,8 +119,8 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: bucket, region key and text."))
 			return 1
 		}
-		c.doPutText(config, bucket, key, text)
-	case "get-text":
+		c.doPutText(client, config, bucket, key, text)
+	case "get":
 		valid := checkArguments(bucket, region, key)
 		if !valid {
 			f.Usage()
@@ -116,80 +128,91 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: bucket, region and key."))
 			return 1
 		}
-		c.doGetText(config, bucket, key)
+		c.doGetText(client, config, bucket, key)
 	default:
 		f.Usage()
 	}
 	return 0
 }
 
-func (c *SecretCommand) doGetText(config *aws.Config, bucket string, key string) {
+func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket string, key string) {
 	c.UI.Info(fmt.Sprintf("Retrive secret text for key : %s", key))
-	blob, err := eaws.RetrieveText(eaws.GetS3Client(config), bucket, key)
+	blob, err := client.Storage.Get(bucket, []byte(key))
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
 	}
-	decrypted, err := eaws.Decrypt(eaws.GetKmsClient(config), &blob)
+	var ev keys.Envelope
+	keys.UnmarshalJSON(blob, &ev)
+	keyID := getKeyID()
+	decrypted, err := client.Keys.Decrypt(keyID, &ev)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
 	}
-	log.Printf("[DEBUG] %s", awsutil.Prettify(decrypted))
-	c.UI.Output(fmt.Sprintf("Decrypted: %s", decrypted))
+	c.UI.Output(fmt.Sprintf("Decrypted: %s", string(decrypted)))
 }
 
-func (c *SecretCommand) doPutText(config *aws.Config, bucket string, key string, text string) {
+func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket string, key string, text string) {
 	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
+
 	keyID := getKeyID()
-	encrypted, err := eaws.Encrypt(eaws.GetKmsClient(config), keyID, []byte(text))
+	ev, err := client.Keys.Encrypt(keyID, []byte(text))
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
 	}
-	log.Printf("[DEBUG] Encrypted: %v", encrypted)
-	result, err := eaws.StoreText(
-		eaws.GetS3Client(config), bucket, key, string(encrypted))
+	log.Printf("[DEBUG] Encrypted: %v", ev)
+
+	output, err := keys.MarshalJSON(ev)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
 	}
-	log.Printf("[DEBUG] %s", awsutil.Prettify(result))
+
+	err = client.Storage.Put(bucket, []byte(key), output)
+	if err != nil {
+		c.UI.Error(err.Error())
+		return
+	}
 	c.UI.Output(fmt.Sprintf("Successfully uploaded data with key %s", key))
 }
 
-func (c *SecretCommand) doPutFile(config *aws.Config, bucket string, key string, path string) {
-	c.UI.Info(fmt.Sprintf("Store secret : %s %s %s", bucket, key, path))
-	file, err := os.Open(path)
-	if err != nil {
-		c.UI.Error(err.Error())
-		return
-	}
-	s3Client := eaws.GetS3Client(config)
-	result, err := s3Client.PutObject(&s3.PutObjectInput{
-		Bucket: &bucket,
-		Key:    aws.String(key),
-		Body:   file,
-	})
-	if err != nil {
-		c.UI.Error(err.Error())
-		return
-	}
-	log.Printf("[DEBUG] %s", awsutil.Prettify(result))
-	c.UI.Output(fmt.Sprintf("Uploaded: %s : %s", path, result))
+// func (c *SecretCommand) doPutFile(config *aws.Config, bucket string, key string, path string) {
+// c.UI.Info(fmt.Sprintf("Store secret : %s %s %s", bucket, key, path))
+// file, err := os.Open(path)
+// if err != nil {
+// 	c.UI.Error(err.Error())
+// 	return
+// }
+// s3Client := eaws.GetS3Client(config)
+// result, err := s3Client.PutObject(&s3.PutObjectInput{
+// 	Bucket: &bucket,
+// 	Key:    aws.String(key),
+// 	Body:   file,
+// })
+// if err != nil {
+// 	c.UI.Error(err.Error())
+// 	return
+// }
+// log.Printf("[DEBUG] %s", awsutil.Prettify(result))
+// c.UI.Output(fmt.Sprintf("Uploaded: %s : %s", path, result))
+// }
+
+func (c *SecretCommand) doDelete(client *Client, config *aws.Config, bucket string, key string) {
+	c.UI.Info(fmt.Sprintf("Delete secret with key %s", key))
+	client.Storage.Delete(bucket, []byte(key))
+	c.UI.Output("Deleted")
 }
 
-func (c *SecretCommand) doDelete(config *aws.Config, bucket string, key string) {
-	c.UI.Info(fmt.Sprintf("Delete secret with key %s", key))
-	s3Client := eaws.GetS3Client(config)
-	result, err := s3Client.DeleteObject(&s3.DeleteObjectInput{
-		Bucket: &bucket,
-		Key:    aws.String(key),
-	})
+func (c *SecretCommand) doList(client *Client, config *aws.Config, bucket string) {
+	c.UI.Info(fmt.Sprintf("List secrets :"))
+	secrets, err := client.Storage.List(bucket)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
 	}
-	log.Printf("[DEBUG] %s", awsutil.Prettify(result))
-	c.UI.Output("Deleted")
+	for _, key := range secrets {
+		c.UI.Output(fmt.Sprintf("- %s", key))
+	}
 }

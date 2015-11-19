@@ -15,24 +15,53 @@
 package store
 
 import (
+	"log"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
-// GetS3Client return S3 service client
-func GetS3Client(cfg *aws.Config) *s3.S3 {
-	c := s3.New(session.New(), cfg)
-	return c
+const (
+	s3Label = "s3"
+)
+
+func init() {
+	backends[s3Label] = NewS3
 }
 
-func ListObjects(s3Client *s3.S3, bucket string) ([]string, error) {
+// S3 is the AWS S3 backend.
+type S3 struct {
+	Client *s3.S3
+}
+
+// NewS3 returns a new Kms.
+func NewS3() StorageBackend {
+	return &S3{
+		Client: s3.New(session.New(&aws.Config{
+			Region: aws.String("eu-west-1")})),
+	}
+}
+
+// Name returns kmsLabel
+func (s *S3) Name() string {
+	return s3Label
+}
+
+// // GetS3Client return S3 service client
+// func GetS3Client(cfg *aws.Config) *s3.S3 {
+// 	c := s3.New(session.New(), cfg)
+// 	return c
+// }
+
+func (s *S3) List(bucket string) ([]string, error) {
 	var l []string
-	resp, err := s3Client.ListObjects(&s3.ListObjectsInput{
+	resp, err := s.Client.ListObjects(&s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
 	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
 	if err != nil {
 		return l, err
 	}
@@ -44,23 +73,35 @@ func ListObjects(s3Client *s3.S3, bucket string) ([]string, error) {
 	return l, nil
 }
 
-func StoreText(s3Client *s3.S3, bucket string, key string, text string) (*s3.PutObjectOutput, error) {
-	return s3Client.PutObject(&s3.PutObjectInput{
+func (s *S3) Put(bucket string, key []byte, value []byte) error {
+	resp, err := s.Client.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String(key),
-		Body:   strings.NewReader(text),
+		Key:    aws.String(string(key)),
+		Body:   strings.NewReader(string(value)),
 	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
+	return err
 }
 
-func RetrieveText(s3Client *s3.S3, bucket string, key string) ([]byte, error) {
-	resp, err := s3Client.GetObject(&s3.GetObjectInput{
+func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
+	resp, err := s.Client.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),
-		Key:    aws.String(key),
+		Key:    aws.String(string(key)),
 	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
 	if err != nil {
 		return nil, err
 	}
 	blob := make([]byte, *resp.ContentLength)
 	_, err = resp.Body.Read(blob)
 	return blob, nil
+}
+
+func (s *S3) Delete(bucket string, key []byte) error {
+	resp, err := s.Client.DeleteObject(&s3.DeleteObjectInput{
+		Bucket: &bucket,
+		Key:    aws.String(string(key)),
+	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
+	return err
 }

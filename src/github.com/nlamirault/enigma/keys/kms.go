@@ -16,8 +16,10 @@ package keys
 
 import (
 	"fmt"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kms"
 	"golang.org/x/crypto/nacl/secretbox"
@@ -56,6 +58,7 @@ func (k *Kms) Decrypt(keyID string, ev *Envelope) ([]byte, error) {
 	res, err := k.client.Decrypt(&kms.DecryptInput{
 		CiphertextBlob: ev.EncryptedKey,
 	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(res))
 	if err != nil {
 		return nil, err
 	}
@@ -100,25 +103,29 @@ func (k *Kms) Encrypt(keyID string, plaintext []byte) (*Envelope, error) {
 
 // Generate generates an EnvelopeKey under a specific KeyID.
 func (k *Kms) generateEnvelopKey(keyID string) (*kms.GenerateDataKeyOutput, error) {
-	dk, err := k.client.GenerateDataKey(&kms.GenerateDataKeyInput{
+	resp, err := k.client.GenerateDataKey(&kms.GenerateDataKeyInput{
 		KeyId:         aws.String(keyID),
 		NumberOfBytes: aws.Int64(keyLength),
 	})
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
 	if err != nil {
 		return nil, err
 	}
 	//return &EnvelopeKey{dk.Plaintext, dk.CiphertextBlob}, nil
-	return dk, nil
+	return resp, nil
 }
 
 func (k *Kms) generateNonce() ([]byte, error) {
-	res, err := k.client.GenerateRandom(
+	resp, err := k.client.GenerateRandom(
 		&kms.GenerateRandomInput{
-			NumberOfBytes: aws.Int64(nonceLength)})
+			NumberOfBytes: aws.Int64(nonceLength),
+		},
+	)
+	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
 	if err != nil {
 		return nil, err
 	}
-	return res.Plaintext, nil
+	return resp.Plaintext, nil
 }
 
 // GetKmsClient returns KMS service client

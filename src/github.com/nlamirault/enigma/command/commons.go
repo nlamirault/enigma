@@ -20,7 +20,9 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 
+	"github.com/nlamirault/enigma/keys"
 	"github.com/nlamirault/enigma/logging"
+	"github.com/nlamirault/enigma/store"
 )
 
 // generalOptionsUsage returns the usage documenation for commonly
@@ -59,4 +61,26 @@ func getAWSConfig(region string, debug bool) *aws.Config {
 
 func getKeyID() string {
 	return os.Getenv("ENIGMA_KEYID")
+}
+
+// Client provides a keys manager and storage backend
+type Client struct {
+	Keys    keys.KeyManager
+	Storage store.StorageBackend
+}
+
+// New creates a new instance of Client.
+func NewClient(keysLabel string, storageLabel string) (*Client, error) {
+	manager, err := keys.New("kms")
+	if err != nil {
+		return nil, err
+	}
+	storage, err := store.New("s3")
+	if err != nil {
+		return nil, err
+	}
+	return &Client{
+		Keys:    manager,
+		Storage: storage,
+	}, nil
 }

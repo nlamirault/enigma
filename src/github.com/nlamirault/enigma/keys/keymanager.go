@@ -15,6 +15,7 @@
 package keys
 
 import (
+	"encoding/json"
 	"errors"
 	"sort"
 )
@@ -61,4 +62,12 @@ type Envelope struct {
 	Ciphertext   []byte
 	EncryptedKey []byte
 	Nonce        []byte
+}
+
+func MarshalJSON(ev *Envelope) ([]byte, error) {
+	return json.Marshal(ev)
+}
+
+func UnmarshalJSON(data []byte, ev *Envelope) error {
+	return json.Unmarshal(data, ev)
 }

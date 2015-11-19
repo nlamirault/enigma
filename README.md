@@ -2,8 +2,6 @@
 
 [![License Apache 2][badge-license]](LICENSE)
 
-This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
-
 Master :
 * [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/master.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/master)
 
@@ -11,7 +9,19 @@ Develop :
 * [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/develop.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/develop)
 
 
+This tool is a personal safe.
+
+* Storage backend :
+- [Amazon S3][] to store secrets encrypted
+
+
+* Secret provider :
+- [Amazon KMS][] to manage encryption keys which encrypt/decrypt your secrets
+
+
 ## Usage
+
+### Amazon
 
 Setup your AWS credentials :
 
