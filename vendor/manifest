@@ -93,9 +93,16 @@
 			"path": "/service/s3"
 		},
 		{
+			"importpath": "github.com/docker/docker/pkg/homedir",
+			"repository": "https://github.com/docker/docker",
+			"revision": "c32f8bb36a5f1b2fe0586a1e080c14d8a6b68610",
+			"branch": "master",
+			"path": "/pkg/homedir"
+		},
+		{
 			"importpath": "github.com/go-ini/ini",
 			"repository": "https://github.com/go-ini/ini",
-			"revision": "060d7da055ba6ec5ea7a31f116332fe5efa04ce0",
+			"revision": "2e44421e256d82ebbf3d4d4fcabe8930b905eff3",
 			"branch": "v1"
 		},
 		{
@@ -117,10 +124,18 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/vaughan0/go-ini",
-			"repository": "https://github.com/vaughan0/go-ini",
-			"revision": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1",
-			"branch": "master"
+			"importpath": "github.com/opencontainers/runc/libcontainer/user",
+			"repository": "https://github.com/opencontainers/runc",
+			"revision": "776791463d2c6ef5a59931c89d5ac8527bb0e46a",
+			"branch": "master",
+			"path": "/libcontainer/user"
+		},
+		{
+			"importpath": "golang.org/x/crypto/cast5",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/cast5"
 		},
 		{
 			"importpath": "golang.org/x/crypto/nacl/secretbox",
@@ -128,6 +143,13 @@
 			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
 			"branch": "master",
 			"path": "/nacl/secretbox"
+		},
+		{
+			"importpath": "golang.org/x/crypto/openpgp",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/openpgp"
 		},
 		{
 			"importpath": "golang.org/x/crypto/poly1305",
