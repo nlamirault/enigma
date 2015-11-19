@@ -15,8 +15,6 @@
 package command
 
 import (
-	"fmt"
-	"os"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -60,20 +58,15 @@ func getAWSConfig(region string, debug bool) *aws.Config {
 	}
 }
 
-func getKeyID() string {
-	return os.Getenv("ENIGMA_KEYID")
-}
-
 // Client provides a keys manager and storage backend
 type Client struct {
 	Keys    crypt.KeyManager
 	Storage store.StorageBackend
 }
 
-// New creates a new instance of Client.
+// NewClient creates a new instance of Client.
 func NewClient(keysLabel string, storageLabel string) (*Client, error) {
-	manager, err := crypt.New("kms")
-	fmt.Printf("manager : %v", manager)
+	manager, err := crypt.New("gpg")
 	if err != nil {
 		return nil, err
 	}

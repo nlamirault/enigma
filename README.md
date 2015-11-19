@@ -11,17 +11,18 @@ Develop :
 
 This tool is a personal safe.
 
-* Storage backend :
+## Storage backend
+
 - [Amazon S3][] to store secrets encrypted
 
 
-* Secret provider :
+## Secret provider
 - [Amazon KMS][] to manage encryption keys which encrypt/decrypt your secrets
 
 
 ## Usage
 
-### Amazon
+### All Amazon
 
 Setup your AWS credentials :
 

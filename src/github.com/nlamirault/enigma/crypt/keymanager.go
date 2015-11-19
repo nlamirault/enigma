@@ -32,10 +32,10 @@ type KeyManager interface {
 	Name() string
 
 	// Encrypt encrypt the data
-	Encrypt(key string, text []byte) ([]byte, error)
+	Encrypt(plaintext []byte) ([]byte, error)
 
 	// Decrypt the secret
-	Decrypt(key string, enc []byte) ([]byte, error)
+	Decrypt(ciphertext []byte) ([]byte, error)
 }
 
 // New returns a KeyManager

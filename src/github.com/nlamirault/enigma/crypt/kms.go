@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awsutil"
@@ -55,7 +56,7 @@ func (k *Kms) Name() string {
 }
 
 // Decrypt decrypts the encrypted key.
-func (k *Kms) Decrypt(keyID string, blob []byte) ([]byte, error) {
+func (k *Kms) Decrypt(blob []byte) ([]byte, error) {
 	var ev Envelope
 	err := unmarshalJSON(blob, &ev)
 	if err != nil {
@@ -84,8 +85,8 @@ func (k *Kms) Decrypt(keyID string, blob []byte) ([]byte, error) {
 }
 
 // Encrypt encrypt the text using a plaintext key
-func (k *Kms) Encrypt(keyID string, plaintext []byte) ([]byte, error) {
-	encKey, err := k.generateEnvelopKey(keyID)
+func (k *Kms) Encrypt(plaintext []byte) ([]byte, error) {
+	encKey, err := k.generateEnvelopKey(getKey())
 	var key [keyLength]byte
 	copy(key[:], encKey.Plaintext[0:keyLength])
 
@@ -144,6 +145,10 @@ func marshalJSON(ev *Envelope) ([]byte, error) {
 
 func unmarshalJSON(data []byte, ev *Envelope) error {
 	return json.Unmarshal(data, ev)
+}
+
+func getKey() string {
+	return os.Getenv("ENIGMA_KEYID")
 }
 
 // GetKmsClient returns KMS service client

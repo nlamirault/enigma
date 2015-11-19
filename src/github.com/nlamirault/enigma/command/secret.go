@@ -142,15 +142,9 @@ func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket str
 		c.UI.Error(err.Error())
 		return
 	}
-	// var ev crypt.Envelope
-	// err = crypt.UnmarshalJSON(blob, &ev)
-	// if err != nil {
-	// 	c.UI.Error(err.Error())
-	// 	return
-	// }
-	keyID := getKeyID()
-	// decrypted, err := client.Keys.Decrypt(keyID, &ev)
-	decrypted, err := client.Keys.Decrypt(keyID, blob)
+
+	//keyID := getKeyID()
+	decrypted, err := client.Keys.Decrypt(blob)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
@@ -161,16 +155,8 @@ func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket str
 func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket string, key string, text string) {
 	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
 
-	keyID := getKeyID()
-	// ev, err := client.Keys.Encrypt(keyID, []byte(text))
-	// if err != nil {
-	// 	c.UI.Error(err.Error())
-	// 	return
-	// }
-	// log.Printf("[DEBUG] Encrypted: %v", ev)
-	// output, err := crypt.MarshalJSON(ev)
-
-	output, err := client.Keys.Encrypt(keyID, []byte(text))
+	//keyID := getKeyID()
+	output, err := client.Keys.Encrypt([]byte(text))
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
