@@ -12,7 +12,4 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
-
-// Version represents the application version using SemVer
-const Version string = "0.2.0"
+package version

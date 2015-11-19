@@ -12,35 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package version
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/mitchellh/cli"
-
-	"github.com/nlamirault/enigma/version"
-)
-
-func main() {
-	os.Exit(realMain())
-}
-
-func realMain() int {
-	cli := &cli.CLI{
-		Args:       os.Args[1:],
-		Commands:   Commands,
-		HelpFunc:   cli.BasicHelpFunc("enigma"),
-		HelpWriter: os.Stdout,
-		Version:    version.Version,
-	}
-
-	exitCode, err := cli.Run()
-	if err != nil {
-		Ui.Error(fmt.Sprintf("Error executing CLI: %s", err.Error()))
-		return 1
-	}
-
-	return exitCode
-}
+// Version represents the application version using SemVer
+const Version string = "0.3.0"

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package aws
 
 import (
 	"fmt"
@@ -32,21 +32,21 @@ func Test_EnigmaKms(t *testing.T) {
 	var cfg *aws.Config
 	cfg = &aws.Config{Region: aws.String(testregion)}
 
-	kmsClient := getKmsClient(cfg)
+	kmsClient := GetKmsClient(cfg)
 	keyID := os.Getenv("ENIGMA_KEYID")
 	if len(keyID) == 0 {
 		t.Fatalf("ENIGMA_KEYID not found")
 	}
 
 	// Encrypt plaintext
-	encrypted, err := encrypt(kmsClient, keyID, []byte(plaintext))
+	encrypted, err := Encrypt(kmsClient, keyID, []byte(plaintext))
 	if err != nil {
 		t.Fatalf("Can't encrypt : %v", err)
 	}
 	fmt.Println("Encrypted: ", encrypted)
 
 	// Decrypt ciphertext
-	decrypted, err := decrypt(kmsClient, &encrypted)
+	decrypted, err := Decrypt(kmsClient, &encrypted)
 	if err != nil {
 		t.Fatalf("Can't decrypt : %v", err)
 	}

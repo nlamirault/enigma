@@ -1,6 +1,11 @@
 ChangeLog
 =============
 
+# Version 0.3.0 (11/19/2015)
+
+- Add delete secret feature
+- Refactoring CLI
+
 # Version 0.2.0 (10/19/2015)
 
 - Setup CircleCI
