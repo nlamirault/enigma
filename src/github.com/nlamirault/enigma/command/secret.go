@@ -15,19 +15,19 @@
 package command
 
 import (
-	"flag"
-	"fmt"
-	//"io/ioutil"
-	"log"
-	"os"
+	// "flag"
+	// "fmt"
+	// "log"
+	// "os"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/awsutil"
-	"github.com/aws/aws-sdk-go/service/s3"
+	// "github.com/aws/aws-sdk-go/aws"
+	// "github.com/aws/aws-sdk-go/aws/awsutil"
+	// "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/mitchellh/cli"
 
-	eaws "github.com/nlamirault/enigma/providers/aws"
+	"github.com/nlamirault/enigma/keys"
+	"github.com/nlamirault/enigma/store"
 )
 
 type SecretCommand struct {
@@ -59,7 +59,7 @@ func (c *SecretCommand) Synopsis() string {
 
 func (c *SecretCommand) Run(args []string) int {
 	var debug bool
-	var bucket, region, key, text string
+	var bucket, region, key, text, keysManager string
 	f := flag.NewFlagSet("bucket", flag.ContinueOnError)
 	f.Usage = func() { c.UI.Error(c.Help()) }
 
@@ -68,6 +68,7 @@ func (c *SecretCommand) Run(args []string) int {
 	f.StringVar(&region, "region", "eu-west-1", "AWS region name")
 	f.StringVar(&key, "key", "", "Key for store data")
 	f.StringVar(&text, "text", "", "Text to store")
+	f.StringVar(&keysManager, "keys-manager", "kms", "Keys Manager")
 	//f.StringVar(&action, "action", "", "Action to perform")
 
 	if err := f.Parse(args); err != nil {
@@ -81,6 +82,13 @@ func (c *SecretCommand) Run(args []string) int {
 	config := getAWSConfig(region, debug)
 	action := args[0]
 	//fmt.Printf("Action: %s\n", action)
+
+	manager, err := keys.New(keysManager)
+	if err != nil {
+		c.UI.Error(err)
+		return 1
+	}
+
 	switch action {
 	case "delete":
 		valid := checkArguments(bucket, region, key)

@@ -14,74 +14,74 @@
 
 package command
 
-import (
-	"testing"
+// import (
+// 	"testing"
 
-	"github.com/mitchellh/cli"
-)
+// 	"github.com/mitchellh/cli"
+// )
 
-func TestSecretWithoutAction(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &SecretCommand{
-		UI: ui,
-	}
+// func TestSecretWithoutAction(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &SecretCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestSecretWithoutBucket(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &SecretCommand{
-		UI: ui,
-	}
+// func TestSecretWithoutBucket(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &SecretCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-		"--action", "get-text",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 		"--action", "get-text",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestSecretWithoutRegion(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &SecretCommand{
-		UI: ui,
-	}
+// func TestSecretWithoutRegion(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &SecretCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--region", "region1",
-		"--action", "get-text",
-	}
+// 	args := []string{
+// 		"--region", "region1",
+// 		"--action", "get-text",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestSecretWithInvalidAction(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &SecretCommand{
-		UI: ui,
-	}
+// func TestSecretWithInvalidAction(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &SecretCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-		"--action", "list",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 		"--action", "list",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }

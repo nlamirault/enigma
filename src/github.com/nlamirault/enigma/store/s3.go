@@ -12,18 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package aws
+package store
 
 import (
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 )
 
 // GetS3Client return S3 service client
 func GetS3Client(cfg *aws.Config) *s3.S3 {
-	c := s3.New(cfg)
+	c := s3.New(session.New(), cfg)
 	return c
 }
 
