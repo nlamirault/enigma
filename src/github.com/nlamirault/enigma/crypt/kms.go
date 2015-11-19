@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package keys
+package crypt
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -54,7 +55,12 @@ func (k *Kms) Name() string {
 }
 
 // Decrypt decrypts the encrypted key.
-func (k *Kms) Decrypt(keyID string, ev *Envelope) ([]byte, error) {
+func (k *Kms) Decrypt(keyID string, blob []byte) ([]byte, error) {
+	var ev Envelope
+	err := unmarshalJSON(blob, &ev)
+	if err != nil {
+		return nil, err
+	}
 	res, err := k.client.Decrypt(&kms.DecryptInput{
 		CiphertextBlob: ev.EncryptedKey,
 	})
@@ -78,10 +84,8 @@ func (k *Kms) Decrypt(keyID string, ev *Envelope) ([]byte, error) {
 }
 
 // Encrypt encrypt the text using a plaintext key
-func (k *Kms) Encrypt(keyID string, plaintext []byte) (*Envelope, error) {
-
+func (k *Kms) Encrypt(keyID string, plaintext []byte) ([]byte, error) {
 	encKey, err := k.generateEnvelopKey(keyID)
-
 	var key [keyLength]byte
 	copy(key[:], encKey.Plaintext[0:keyLength])
 
@@ -94,11 +98,17 @@ func (k *Kms) Encrypt(keyID string, plaintext []byte) (*Envelope, error) {
 
 	var enc []byte
 	enc = secretbox.Seal(enc, plaintext, &nonce, &key)
-	return &Envelope{
+
+	ev := &Envelope{
 		Ciphertext:   enc,
 		EncryptedKey: encKey.CiphertextBlob,
 		Nonce:        nonce[:],
-	}, nil
+	}
+	output, err := marshalJSON(ev)
+	if err != nil {
+		return nil, err
+	}
+	return output, nil
 }
 
 // Generate generates an EnvelopeKey under a specific KeyID.
@@ -126,6 +136,14 @@ func (k *Kms) generateNonce() ([]byte, error) {
 		return nil, err
 	}
 	return resp.Plaintext, nil
+}
+
+func marshalJSON(ev *Envelope) ([]byte, error) {
+	return json.Marshal(ev)
+}
+
+func unmarshalJSON(data []byte, ev *Envelope) error {
+	return json.Unmarshal(data, ev)
 }
 
 // GetKmsClient returns KMS service client

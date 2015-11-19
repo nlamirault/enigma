@@ -15,12 +15,13 @@
 package command
 
 import (
+	"fmt"
 	"os"
 	"strings"
 
 	"github.com/aws/aws-sdk-go/aws"
 
-	"github.com/nlamirault/enigma/keys"
+	"github.com/nlamirault/enigma/crypt"
 	"github.com/nlamirault/enigma/logging"
 	"github.com/nlamirault/enigma/store"
 )
@@ -65,13 +66,14 @@ func getKeyID() string {
 
 // Client provides a keys manager and storage backend
 type Client struct {
-	Keys    keys.KeyManager
+	Keys    crypt.KeyManager
 	Storage store.StorageBackend
 }
 
 // New creates a new instance of Client.
 func NewClient(keysLabel string, storageLabel string) (*Client, error) {
-	manager, err := keys.New("kms")
+	manager, err := crypt.New("kms")
+	fmt.Printf("manager : %v", manager)
 	if err != nil {
 		return nil, err
 	}

@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package keys
+package crypt
 
 import (
-	"encoding/json"
 	"errors"
 	"sort"
 )
@@ -33,10 +32,10 @@ type KeyManager interface {
 	Name() string
 
 	// Encrypt encrypt the data
-	Encrypt(keyID string, plaintext []byte) (*Envelope, error)
+	Encrypt(key string, text []byte) ([]byte, error)
 
 	// Decrypt the secret
-	Decrypt(keyID string, ev *Envelope) ([]byte, error)
+	Decrypt(key string, enc []byte) ([]byte, error)
 }
 
 // New returns a KeyManager
@@ -62,12 +61,4 @@ type Envelope struct {
 	Ciphertext   []byte
 	EncryptedKey []byte
 	Nonce        []byte
-}
-
-func MarshalJSON(ev *Envelope) ([]byte, error) {
-	return json.Marshal(ev)
-}
-
-func UnmarshalJSON(data []byte, ev *Envelope) error {
-	return json.Unmarshal(data, ev)
 }

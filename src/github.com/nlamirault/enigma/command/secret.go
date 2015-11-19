@@ -17,7 +17,7 @@ package command
 import (
 	"flag"
 	"fmt"
-	"log"
+	//"log"
 	//"os"
 	"strings"
 
@@ -26,7 +26,7 @@ import (
 	// "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/mitchellh/cli"
 
-	"github.com/nlamirault/enigma/keys"
+	//"github.com/nlamirault/enigma/crypt"
 	//"github.com/nlamirault/enigma/store"
 )
 
@@ -142,10 +142,15 @@ func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket str
 		c.UI.Error(err.Error())
 		return
 	}
-	var ev keys.Envelope
-	keys.UnmarshalJSON(blob, &ev)
+	// var ev crypt.Envelope
+	// err = crypt.UnmarshalJSON(blob, &ev)
+	// if err != nil {
+	// 	c.UI.Error(err.Error())
+	// 	return
+	// }
 	keyID := getKeyID()
-	decrypted, err := client.Keys.Decrypt(keyID, &ev)
+	// decrypted, err := client.Keys.Decrypt(keyID, &ev)
+	decrypted, err := client.Keys.Decrypt(keyID, blob)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
@@ -157,14 +162,15 @@ func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket str
 	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
 
 	keyID := getKeyID()
-	ev, err := client.Keys.Encrypt(keyID, []byte(text))
-	if err != nil {
-		c.UI.Error(err.Error())
-		return
-	}
-	log.Printf("[DEBUG] Encrypted: %v", ev)
+	// ev, err := client.Keys.Encrypt(keyID, []byte(text))
+	// if err != nil {
+	// 	c.UI.Error(err.Error())
+	// 	return
+	// }
+	// log.Printf("[DEBUG] Encrypted: %v", ev)
+	// output, err := crypt.MarshalJSON(ev)
 
-	output, err := keys.MarshalJSON(ev)
+	output, err := client.Keys.Encrypt(keyID, []byte(text))
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
