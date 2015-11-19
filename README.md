@@ -1,7 +1,6 @@
 # Enigma
 
 [![License Apache 2][badge-license]](LICENSE)
-[![GitHub version](https://badge.fury.io/gh/nlamirault%2Fenigma.svg)](https://badge.fury.io/gh/nlamirault%2Fenigma)
 
 This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
 
