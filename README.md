@@ -1,4 +1,4 @@
- # Enigma
+# Enigma
 
 [![License Apache 2][badge-license]](LICENSE)
 
