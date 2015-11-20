@@ -68,14 +68,14 @@ func Test_EnigmaKmsManager(t *testing.T) {
 	}
 
 	// Encrypt plaintext
-	ev, err := manager.Encrypt(keyID, []byte(plaintext))
+	ev, err := manager.Encrypt([]byte(plaintext))
 	if err != nil {
 		t.Fatalf("Can't encrypt : %v", err)
 	}
 	fmt.Println("Encrypted: ", ev)
 
 	// Decrypt ciphertext
-	decrypted, err := manager.Decrypt(keyID, ev)
+	decrypted, err := manager.Decrypt(ev)
 	if err != nil {
 		t.Fatalf("Can't decrypt : %v", err)
 	}
