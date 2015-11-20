@@ -18,8 +18,6 @@ import (
 	"fmt"
 	"os"
 	"testing"
-
-	//"github.com/aws/aws-sdk-go/aws"
 )
 
 const (
@@ -27,40 +25,7 @@ const (
 	plaintext  = "In tartiflette we trust !"
 )
 
-// func Test_EnigmaKms(t *testing.T) {
-
-// 	var cfg *aws.Config
-// 	cfg = &aws.Config{Region: aws.String(testregion)}
-
-// 	kmsClient := GetKmsClient(cfg)
-// 	keyID := os.Getenv("ENIGMA_KEYID")
-// 	if len(keyID) == 0 {
-// 		t.Fatalf("ENIGMA_KEYID not found")
-// 	}
-
-// 	// Encrypt plaintext
-// 	encrypted, err := Encrypt(kmsClient, keyID, []byte(plaintext))
-// 	if err != nil {
-// 		t.Fatalf("Can't encrypt : %v", err)
-// 	}
-// 	fmt.Println("Encrypted: ", encrypted)
-
-// 	// Decrypt ciphertext
-// 	decrypted, err := Decrypt(kmsClient, &encrypted)
-// 	if err != nil {
-// 		t.Fatalf("Can't decrypt : %v", err)
-// 	}
-// 	fmt.Println("Decrypted: ", decrypted)
-
-// 	if plaintext != string(decrypted) {
-// 		t.Fatalf("Enigma failed %v", err)
-// 	}
-
-// }
-
 func Test_EnigmaKmsManager(t *testing.T) {
-	// var cfg *aws.Config
-	// cfg = &aws.Config{Region: aws.String(testregion)}
 	manager := NewKms()
 	keyID := os.Getenv("ENIGMA_KEYID")
 	if len(keyID) == 0 {
