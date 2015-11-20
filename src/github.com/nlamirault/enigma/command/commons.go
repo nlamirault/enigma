@@ -19,7 +19,7 @@ import (
 
 	"github.com/aws/aws-sdk-go/aws"
 
-	"github.com/nlamirault/enigma/crypt"
+	"github.com/nlamirault/enigma/crypto"
 	"github.com/nlamirault/enigma/logging"
 	"github.com/nlamirault/enigma/store"
 )

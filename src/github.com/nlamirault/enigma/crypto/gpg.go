@@ -27,6 +27,7 @@ import (
 	"github.com/docker/docker/pkg/homedir"
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 const (
@@ -102,28 +103,27 @@ func (g *Gpg) Encrypt(b []byte) ([]byte, error) {
 func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 
 	// Open the private key file
-	keyringFileBuffer, err := os.Open(g.PrivateKeyring)
+	privateRingBuffer, err := os.Open(g.PrivateKeyring)
 	if err != nil {
 		return nil, err
 	}
-	defer keyringFileBuffer.Close()
+	defer privateRingBuffer.Close()
 
-	entityList, err := openpgp.ReadKeyRing(keyringFileBuffer)
+	privateRing, err := openpgp.ReadKeyRing(privateRingBuffer)
 	if err != nil {
 		return nil, err
 	}
-	entity := getKeyByEmail(entityList, "nicolas.lamirault@gmail.com") //entityList[0]
+	privateKey := getKeyByEmail(privateRing, "nicolas.lamirault@gmail.com")
 
 	fmt.Print("GPG Passphrase: ")
-	var passphrase string
-	fmt.Scanln(&passphrase)
+	passphrase, err := terminal.ReadPassword(0)
+	fmt.Println("")
 
 	log.Printf("[DEBUG] Decrypting private key using passphrase")
-
-	passphraseByte := []byte(passphrase)
-	entity.PrivateKey.Decrypt(passphraseByte)
-	for _, subkey := range entity.Subkeys {
-		subkey.PrivateKey.Decrypt(passphraseByte)
+	//passphraseByte := []byte(passphrase)
+	privateKey.PrivateKey.Decrypt(passphrase)
+	for _, subkey := range privateKey.Subkeys {
+		subkey.PrivateKey.Decrypt(passphrase)
 	}
 	log.Printf("[DEBUG] Finished decrypting private key using passphrase")
 
@@ -133,7 +133,7 @@ func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 	}
 
 	// Decrypt it with the contents of the private key
-	md, err := openpgp.ReadMessage(armoredBlock.Body, entityList, nil, nil)
+	md, err := openpgp.ReadMessage(armoredBlock.Body, privateRing, nil, nil)
 	if err != nil {
 		return nil, fmt.Errorf("GPG Read message failed: %v", err)
 	}
