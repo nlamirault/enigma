@@ -18,18 +18,25 @@ import (
 	"fmt"
 	"os"
 	"testing"
-)
 
-const (
-	testregion = "eu-west-1"
-	plaintext  = "In tartiflette we trust !"
+	"github.com/nlamirault/enigma/config"
 )
 
 func Test_EnigmaKmsManager(t *testing.T) {
-	manager := NewKms()
+	plaintext := "In tartiflette we trust !"
 	keyID := os.Getenv("ENIGMA_KEYID")
 	if len(keyID) == 0 {
 		t.Fatalf("ENIGMA_KEYID not found")
+	}
+	manager, err := NewKms(&config.Configuration{
+		Encryption: "kms",
+		Kms: &config.KmsConfiguration{
+			Region: "eu-west-1",
+			KeyID:  keyID,
+		},
+	})
+	if err != nil {
+		t.Fatalf("Can't create KMS manager : %v", err)
 	}
 
 	// Encrypt plaintext
