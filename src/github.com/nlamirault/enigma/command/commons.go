@@ -62,11 +62,11 @@ func NewClient(filename string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	manager, err := crypto.New(conf.Encryption)
+	manager, err := crypto.New(conf)
 	if err != nil {
 		return nil, err
 	}
-	storage, err := store.New(conf.Backend, conf)
+	storage, err := store.New(conf)
 	if err != nil {
 		return nil, err
 	}

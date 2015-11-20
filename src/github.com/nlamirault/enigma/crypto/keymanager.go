@@ -17,10 +17,12 @@ package crypto
 import (
 	"errors"
 	"sort"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 var (
-	registry                 = make(map[string]func() KeyManager)
+	registry                 = make(map[string]func(*config.Configuration) (KeyManager, error))
 	errUnsupportedKeyManager = errors.New("Unsupported key manager")
 )
 
@@ -39,9 +41,9 @@ type KeyManager interface {
 }
 
 // New returns a KeyManager
-func New(label string) (KeyManager, error) {
-	if constructor, present := registry[label]; present {
-		return constructor(), nil
+func New(conf *config.Configuration) (KeyManager, error) {
+	if constructor, present := registry[conf.Encryption]; present {
+		return constructor(conf)
 	}
 	return nil, errUnsupportedKeyManager
 }

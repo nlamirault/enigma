@@ -28,6 +28,8 @@ import (
 	"golang.org/x/crypto/openpgp"
 	"golang.org/x/crypto/openpgp/armor"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 const (
@@ -43,17 +45,19 @@ func init() {
 type Gpg struct {
 	PublicKeyring  string
 	PrivateKeyring string
+	Email          string
 }
 
 // NewGpg returns a new Gpg instance
-func NewGpg() KeyManager {
+func NewGpg(conf *config.Configuration) (KeyManager, error) {
 	home := homedir.Get()
 	publicKeyring := filepath.Join(home, defaultGPGPath, "pubring.gpg")
 	privateKeyring := filepath.Join(home, defaultGPGPath, "secring.gpg")
 	return &Gpg{
 		PublicKeyring:  publicKeyring,
 		PrivateKeyring: privateKeyring,
-	}
+		Email:          conf.Gpg.Email,
+	}, nil
 }
 
 // Name return the GPG name provider
@@ -75,7 +79,7 @@ func (g *Gpg) Encrypt(b []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	publicKey := getKeyByEmail(publicRing, "nicolas.lamirault@gmail.com")
+	publicKey := getKeyByEmail(publicRing, g.Email)
 	if publicKey == nil {
 		return nil, fmt.Errorf("Can't find GPG public key")
 	}
@@ -116,7 +120,7 @@ func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	privateKey := getKeyByEmail(privateRing, "nicolas.lamirault@gmail.com")
+	privateKey := getKeyByEmail(privateRing, g.Email)
 
 	fmt.Print("GPG Passphrase: ")
 	passphrase, err := terminal.ReadPassword(0)

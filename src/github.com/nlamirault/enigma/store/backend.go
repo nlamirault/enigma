@@ -46,8 +46,8 @@ type StorageBackend interface {
 }
 
 // New returns a new storage backend using the label
-func New(label string, conf *config.Configuration) (StorageBackend, error) {
-	if constructor, present := backends[label]; present {
+func New(conf *config.Configuration) (StorageBackend, error) {
+	if constructor, present := backends[conf.Backend]; present {
 		return constructor(conf)
 	}
 	return nil, errUnsupportedStorageBackend

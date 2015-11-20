@@ -25,6 +25,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/kms"
 	"golang.org/x/crypto/nacl/secretbox"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 const (
@@ -43,11 +45,11 @@ type Kms struct {
 }
 
 // NewKms returns a new Kms.
-func NewKms() KeyManager {
+func NewKms(conf *config.Configuration) (KeyManager, error) {
 	return &Kms{
 		client: kms.New(session.New(&aws.Config{
-			Region: aws.String("eu-west-1")})),
-	}
+			Region: aws.String(conf.Kms.Region)})),
+	}, nil
 }
 
 // Name returns kmsLabel
