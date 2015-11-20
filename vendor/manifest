@@ -93,6 +93,12 @@
 			"path": "/service/s3"
 		},
 		{
+			"importpath": "github.com/boltdb/bolt",
+			"repository": "https://github.com/boltdb/bolt",
+			"revision": "0b00effdd7a8270ebd91c24297e51643e370dd52",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/docker/docker/pkg/homedir",
 			"repository": "https://github.com/docker/docker",
 			"revision": "c32f8bb36a5f1b2fe0586a1e080c14d8a6b68610",

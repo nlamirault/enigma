@@ -70,7 +70,7 @@ func NewClient(keysLabel string, storageLabel string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	storage, err := store.New("s3")
+	storage, err := store.New("boltdb")
 	if err != nil {
 		return nil, err
 	}

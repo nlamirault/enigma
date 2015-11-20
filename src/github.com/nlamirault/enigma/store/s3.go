@@ -38,26 +38,21 @@ type S3 struct {
 }
 
 // NewS3 returns a new Kms.
-func NewS3() StorageBackend {
+func NewS3() (StorageBackend, error) {
 	return &S3{
 		Client: s3.New(session.New(&aws.Config{
 			Region: aws.String("eu-west-1")})),
-	}
+	}, nil
 }
 
-// Name returns kmsLabel
+// Name returns S3 label
 func (s *S3) Name() string {
 	return s3Label
 }
 
-// // GetS3Client return S3 service client
-// func GetS3Client(cfg *aws.Config) *s3.S3 {
-// 	c := s3.New(session.New(), cfg)
-// 	return c
-// }
-
 func (s *S3) List(bucket string) ([]string, error) {
 	var l []string
+	log.Printf("[DEBUG] S3 list secrets %s", bucket)
 	resp, err := s.Client.ListObjects(&s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
 	})
@@ -74,6 +69,7 @@ func (s *S3) List(bucket string) ([]string, error) {
 }
 
 func (s *S3) Put(bucket string, key []byte, value []byte) error {
+	log.Printf("[DEBUG] S3 Put : %s %v %v", bucket, string(key), string(value))
 	resp, err := s.Client.PutObject(&s3.PutObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(string(key)),
@@ -84,6 +80,7 @@ func (s *S3) Put(bucket string, key []byte, value []byte) error {
 }
 
 func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
+	log.Printf("[DEBUG] S3 Get : %s %v", bucket, string(key))
 	resp, err := s.Client.GetObject(&s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(string(key)),
@@ -98,6 +95,7 @@ func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
 }
 
 func (s *S3) Delete(bucket string, key []byte) error {
+	log.Printf("[DEBUG] S3 Delete : %s %v", bucket, string(key))
 	resp, err := s.Client.DeleteObject(&s3.DeleteObjectInput{
 		Bucket: &bucket,
 		Key:    aws.String(string(key)),

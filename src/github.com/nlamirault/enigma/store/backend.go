@@ -20,7 +20,7 @@ import (
 )
 
 var (
-	backends                     = make(map[string]func() StorageBackend)
+	backends                     = make(map[string]func() (StorageBackend, error))
 	errUnsupportedStorageBackend = errors.New("Unsupported storage backend")
 )
 
@@ -45,7 +45,7 @@ type StorageBackend interface {
 
 func New(label string) (StorageBackend, error) {
 	if constructor, present := backends[label]; present {
-		return constructor(), nil
+		return constructor()
 	}
 	return nil, errUnsupportedStorageBackend
 }
