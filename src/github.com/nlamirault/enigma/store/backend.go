@@ -17,10 +17,12 @@ package store
 import (
 	"errors"
 	"sort"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 var (
-	backends                     = make(map[string]func() (StorageBackend, error))
+	backends                     = make(map[string]func(*config.Configuration) (StorageBackend, error))
 	errUnsupportedStorageBackend = errors.New("Unsupported storage backend")
 )
 
@@ -31,22 +33,22 @@ type StorageBackend interface {
 	Name() string
 
 	// Put a value at the specified key
-	Put(bucket string, key []byte, value []byte) error
+	Put(key []byte, value []byte) error
 
 	// Get a value given its key
-	Get(bucket string, key []byte) ([]byte, error)
+	Get(key []byte) ([]byte, error)
 
 	// Delete a value given its key
-	Delete(bucket string, key []byte) error
+	Delete(key []byte) error
 
 	// List values
-	List(bucket string) ([]string, error)
+	List() ([]string, error)
 }
 
 // New returns a new storage backend using the label
-func New(label string) (StorageBackend, error) {
+func New(label string, conf *config.Configuration) (StorageBackend, error) {
 	if constructor, present := backends[label]; present {
-		return constructor()
+		return constructor(conf)
 	}
 	return nil, errUnsupportedStorageBackend
 }

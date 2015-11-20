@@ -20,6 +20,34 @@ This tool is a personal safe.
 - [Amazon KMS][] to manage encryption keys which encrypt/decrypt your secrets
 
 
+## Configuration
+
+```toml
+# enigma.toml
+
+# Encryption provider
+backend = "gpg"
+
+# Storage backend
+storage = "boltdb"
+
+[crypto]
+  [crypto.gpg]
+    email = "foo.bar@gmail"
+  [crypto.kms]
+    region = "eu-west-1"
+    keyID = "xxxx-xxxx-xxxx"
+
+[storage]
+  [storage.s3]
+    region = "eu-west-1"
+    bucket = "enigma"
+  [storage.boltdb]
+    directory = "/tmp/"
+    bucket = "enigma"
+
+```
+
 ## Usage
 
 ### All Amazon

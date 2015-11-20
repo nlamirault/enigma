@@ -17,13 +17,16 @@ package store
 import (
 	"fmt"
 	"log"
+	"path/filepath"
 
 	"github.com/boltdb/bolt"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 const (
 	// Bucket defines the Enigma bucket
-	Bucket      = "enigma"
+	// Bucket      = "enigma"
 	boltdbLabel = "boltdb"
 )
 
@@ -39,15 +42,15 @@ type BoltDB struct {
 }
 
 // NewBoltDB opens a new BoltDB connection to the specified path and bucket
-func NewBoltDB() (StorageBackend, error) {
-	path := fmt.Sprintf("/tmp/%s", Bucket)
-	log.Printf("[DEBUG] Init BoltDB storage : %v", path)
-	db, err := bolt.Open(path, 0600, nil)
+func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
+	f := filepath.Join(conf.BoltDB.Directory, "enigma.db")
+	log.Printf("[DEBUG] Init BoltDB storage : %v", f)
+	db, err := bolt.Open(f, 0600, nil)
 	if err != nil {
 		return nil, err
 	}
 	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(Bucket))
+		_, err := tx.CreateBucketIfNotExists([]byte(conf.BoltDB.Bucket))
 		if err != nil {
 			return fmt.Errorf("Can't create BoltDB bucket: %s", err)
 		}
@@ -55,8 +58,8 @@ func NewBoltDB() (StorageBackend, error) {
 	})
 	return &BoltDB{
 		DB:         db,
-		Path:       path,
-		BucketName: Bucket,
+		Path:       conf.BoltDB.Directory,
+		BucketName: conf.BoltDB.Bucket,
 	}, nil
 }
 
@@ -66,7 +69,7 @@ func (db *BoltDB) Name() string {
 }
 
 // List returns all secrets
-func (db *BoltDB) List(bucket string) ([]string, error) {
+func (db *BoltDB) List() ([]string, error) {
 	log.Printf("[DEBUG] BoltDB list secrets")
 	var l []string
 	db.DB.Update(func(tx *bolt.Tx) error {
@@ -82,7 +85,7 @@ func (db *BoltDB) List(bucket string) ([]string, error) {
 }
 
 // Get a value given its key
-func (db *BoltDB) Get(bucket string, key []byte) ([]byte, error) {
+func (db *BoltDB) Get(key []byte) ([]byte, error) {
 	log.Printf("[DEBUG] Search entry with key : %v", string(key))
 	var value []byte
 	db.DB.Update(func(tx *bolt.Tx) error {
@@ -101,7 +104,7 @@ func (db *BoltDB) Get(bucket string, key []byte) ([]byte, error) {
 }
 
 // Put a value at the specified key
-func (db *BoltDB) Put(bucket string, key []byte, value []byte) error {
+func (db *BoltDB) Put(key []byte, value []byte) error {
 	log.Printf("[DEBUG] Put : %v %v", string(key), string(value))
 	return db.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.BucketName))
@@ -111,7 +114,7 @@ func (db *BoltDB) Put(bucket string, key []byte, value []byte) error {
 }
 
 // Delete the value at the specified key
-func (db *BoltDB) Delete(bucket string, key []byte) error {
+func (db *BoltDB) Delete(key []byte) error {
 	log.Printf("[DEBUG] Delete : %v", string(key))
 	return fmt.Errorf("Not implemented")
 }

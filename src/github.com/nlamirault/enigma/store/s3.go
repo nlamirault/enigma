@@ -22,6 +22,8 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awsutil"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 const (
@@ -35,13 +37,15 @@ func init() {
 // S3 is the AWS S3 backend.
 type S3 struct {
 	Client *s3.S3
+	Bucket string
 }
 
 // NewS3 returns a new Kms.
-func NewS3() (StorageBackend, error) {
+func NewS3(conf *config.Configuration) (StorageBackend, error) {
 	return &S3{
 		Client: s3.New(session.New(&aws.Config{
-			Region: aws.String("eu-west-1")})),
+			Region: aws.String(conf.S3.Region)})),
+		Bucket: conf.S3.Bucket,
 	}, nil
 }
 
@@ -51,11 +55,11 @@ func (s *S3) Name() string {
 }
 
 // List returns all secrets
-func (s *S3) List(bucket string) ([]string, error) {
+func (s *S3) List() ([]string, error) {
 	var l []string
-	log.Printf("[DEBUG] S3 list secrets %s", bucket)
+	log.Printf("[DEBUG] S3 list secrets %s", s.Bucket)
 	resp, err := s.Client.ListObjects(&s3.ListObjectsInput{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(s.Bucket),
 	})
 	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
 	if err != nil {
@@ -70,10 +74,10 @@ func (s *S3) List(bucket string) ([]string, error) {
 }
 
 // Put a value at the specified key
-func (s *S3) Put(bucket string, key []byte, value []byte) error {
-	log.Printf("[DEBUG] S3 Put : %s %v %v", bucket, string(key), string(value))
+func (s *S3) Put(key []byte, value []byte) error {
+	log.Printf("[DEBUG] S3 Put : %s %v %v", s.Bucket, string(key), string(value))
 	resp, err := s.Client.PutObject(&s3.PutObjectInput{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(s.Bucket),
 		Key:    aws.String(string(key)),
 		Body:   strings.NewReader(string(value)),
 	})
@@ -82,10 +86,10 @@ func (s *S3) Put(bucket string, key []byte, value []byte) error {
 }
 
 // Get a value given its key
-func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
-	log.Printf("[DEBUG] S3 Get : %s %v", bucket, string(key))
+func (s *S3) Get(key []byte) ([]byte, error) {
+	log.Printf("[DEBUG] S3 Get : %s %v", s.Bucket, string(key))
 	resp, err := s.Client.GetObject(&s3.GetObjectInput{
-		Bucket: aws.String(bucket),
+		Bucket: aws.String(s.Bucket),
 		Key:    aws.String(string(key)),
 	})
 	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
@@ -98,10 +102,10 @@ func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
 }
 
 // Delete the value at the specified key
-func (s *S3) Delete(bucket string, key []byte) error {
-	log.Printf("[DEBUG] S3 Delete : %s %v", bucket, string(key))
+func (s *S3) Delete(key []byte) error {
+	log.Printf("[DEBUG] S3 Delete : %s %v", s.Bucket, string(key))
 	resp, err := s.Client.DeleteObject(&s3.DeleteObjectInput{
-		Bucket: &bucket,
+		Bucket: &s.Bucket,
 		Key:    aws.String(string(key)),
 	})
 	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))

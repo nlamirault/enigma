@@ -22,6 +22,8 @@ import (
 	"github.com/nlamirault/enigma/crypto"
 	"github.com/nlamirault/enigma/logging"
 	"github.com/nlamirault/enigma/store"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 // generalOptionsUsage returns the usage documenation for commonly
@@ -29,8 +31,6 @@ import (
 func generalOptionsUsage() string {
 	general := `
         --debug                       Debug mode enabled
-	--bucket=name                 Bucket name
-        --region=name                 Region name
 `
 	return strings.TrimSpace(general)
 }
@@ -60,17 +60,21 @@ func getAWSConfig(region string, debug bool) *aws.Config {
 
 // Client provides a keys manager and storage backend
 type Client struct {
-	Keys    crypt.KeyManager
+	Keys    crypto.KeyManager
 	Storage store.StorageBackend
 }
 
 // NewClient creates a new instance of Client.
-func NewClient(keysLabel string, storageLabel string) (*Client, error) {
-	manager, err := crypt.New("gpg")
+func NewClient(filename string, keysLabel string, storageLabel string) (*Client, error) {
+	conf, err := config.LoadFileConfig(filename)
 	if err != nil {
 		return nil, err
 	}
-	storage, err := store.New("boltdb")
+	manager, err := crypto.New("gpg")
+	if err != nil {
+		return nil, err
+	}
+	storage, err := store.New("boltdb", conf)
 	if err != nil {
 		return nil, err
 	}

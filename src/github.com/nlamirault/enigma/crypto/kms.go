@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package crypt
+package crypto
 
 import (
 	"encoding/json"
@@ -150,30 +150,3 @@ func unmarshalJSON(data []byte, ev *Envelope) error {
 func getKey() string {
 	return os.Getenv("ENIGMA_KEYID")
 }
-
-// GetKmsClient returns KMS service client
-// func GetKmsClient(cfg *aws.Config) *kms.KMS {
-// 	c := kms.New(cfg)
-// 	return c
-// }
-
-// func Decrypt(kmsClient *kms.KMS, ciphertext *[]byte) ([]byte, error) {
-// 	resp, err := kmsClient.Decrypt(&kms.DecryptInput{
-// 		CiphertextBlob: *ciphertext,
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return resp.Plaintext, nil
-// }
-
-// func Encrypt(kmsClient *kms.KMS, keyID string, plaintext []byte) ([]byte, error) {
-// 	resp, err := kmsClient.Encrypt(&kms.EncryptInput{
-// 		Plaintext: plaintext,
-// 		KeyId:     aws.String(keyID),
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return resp.CiphertextBlob, nil
-// }

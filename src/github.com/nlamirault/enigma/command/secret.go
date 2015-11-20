@@ -19,11 +19,13 @@ import (
 	"fmt"
 	//"log"
 	//"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
+	// "github.com/aws/aws-sdk-go/aws"
 	// "github.com/aws/aws-sdk-go/aws/awsutil"
 	// "github.com/aws/aws-sdk-go/service/s3"
+	"github.com/docker/docker/pkg/homedir"
 	"github.com/mitchellh/cli"
 
 	//"github.com/nlamirault/enigma/crypt"
@@ -65,16 +67,20 @@ func (c *SecretCommand) Synopsis() string {
 // Run launch the command
 func (c *SecretCommand) Run(args []string) int {
 	var debug bool
-	var bucket, region, key, text, keysManager string
-	f := flag.NewFlagSet("bucket", flag.ContinueOnError)
+	var key, text, config string
+	f := flag.NewFlagSet("secrets", flag.ContinueOnError)
 	f.Usage = func() { c.UI.Error(c.Help()) }
 
+	home := homedir.Get()
+	defaultConfigFile := filepath.Join(home, ".config/enigma/enigma.toml")
+
 	f.BoolVar(&debug, "debug", false, "Debug mode enabled")
-	f.StringVar(&bucket, "bucket", "", "Glacier vault's bucket")
-	f.StringVar(&region, "region", "eu-west-1", "AWS region name")
+	f.StringVar(&config, "config", defaultConfigFile, "Configuration filename")
+	// f.StringVar(&bucket, "bucket", "", "Glacier vault's bucket")
+	// f.StringVar(&region, "region", "eu-west-1", "AWS region name")
 	f.StringVar(&key, "key", "", "Key for store data")
 	f.StringVar(&text, "text", "", "Text to store")
-	f.StringVar(&keysManager, "keys-manager", "kms", "Keys Manager")
+	// f.StringVar(&keysManager, "keys-manager", "kms", "Keys Manager")
 	//f.StringVar(&action, "action", "", "Action to perform")
 
 	if err := f.Parse(args); err != nil {
@@ -86,62 +92,63 @@ func (c *SecretCommand) Run(args []string) int {
 		return 1
 	}
 
-	client, err := NewClient("kms", "s3")
+	client, err := NewClient(config, "kms", "s3")
 	if err != nil {
 		c.UI.Error(err.Error())
 		return 1
 	}
 
-	config := getAWSConfig(region, debug)
+	//awsConfig := getAWSConfig(region, debug)
+
 	action := args[0]
 	//fmt.Printf("Action: %s\n", action)
 
 	switch action {
 	case "list":
-		valid := checkArguments(bucket, region)
-		if !valid {
-			f.Usage()
-			c.UI.Error(fmt.Sprintf(
-				"\nSecret expects arguments: bucket and region."))
-			return 1
-		}
-		c.doList(client, config, bucket)
+		// valid := checkArguments(bucket, region)
+		// if !valid {
+		// 	f.Usage()
+		// 	c.UI.Error(fmt.Sprintf(
+		// 		"\nSecret expects arguments: bucket and region."))
+		// 	return 1
+		// }
+		c.doList(client) //, awsConfig, bucket)
 	case "delete":
-		valid := checkArguments(bucket, region, key)
+		valid := checkArguments(key)
 		if !valid {
 			f.Usage()
 			c.UI.Error(fmt.Sprintf(
-				"\nSecret expects arguments: bucket, region and key."))
+				"\nSecret expects arguments: key."))
 			return 1
 		}
-		c.doDelete(client, config, bucket, key)
+		c.doDelete(client, key) //awsConfig, bucket, key)
 	case "put":
-		valid := checkArguments(bucket, region, key, text)
+		valid := checkArguments(key, text)
 		if !valid {
 			f.Usage()
 			c.UI.Error(fmt.Sprintf(
-				"\nSecret expects arguments: bucket, region key and text."))
+				"\nSecret expects arguments: key and text."))
 			return 1
 		}
-		c.doPutText(client, config, bucket, key, text)
+		c.doPutText(client, key, text) //awsConfig, bucket, key, text)
 	case "get":
-		valid := checkArguments(bucket, region, key)
+		valid := checkArguments(key)
 		if !valid {
 			f.Usage()
 			c.UI.Error(fmt.Sprintf(
-				"\nSecret expects arguments: bucket, region and key."))
+				"\nSecret expects arguments: key."))
 			return 1
 		}
-		c.doGetText(client, config, bucket, key)
+		c.doGetText(client, key) //awsConfig, bucket, key)
 	default:
 		f.Usage()
 	}
 	return 0
 }
 
-func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket string, key string) {
+func (c *SecretCommand) doGetText(client *Client, key string) {
 	c.UI.Info(fmt.Sprintf("Retrive secret text for key : %s", key))
-	blob, err := client.Storage.Get(bucket, []byte(key))
+	blob, err := client.Storage.Get([]byte(key))
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
@@ -156,7 +163,7 @@ func (c *SecretCommand) doGetText(client *Client, config *aws.Config, bucket str
 	c.UI.Output(fmt.Sprintf("Decrypted: %s", string(decrypted)))
 }
 
-func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket string, key string, text string) {
+func (c *SecretCommand) doPutText(client *Client, key string, text string) {
 	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
 
 	//keyID := getKeyID()
@@ -166,7 +173,7 @@ func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket str
 		return
 	}
 
-	err = client.Storage.Put(bucket, []byte(key), output)
+	err = client.Storage.Put([]byte(key), output)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
@@ -174,36 +181,15 @@ func (c *SecretCommand) doPutText(client *Client, config *aws.Config, bucket str
 	c.UI.Output(fmt.Sprintf("Successfully uploaded data with key %s", key))
 }
 
-// func (c *SecretCommand) doPutFile(config *aws.Config, bucket string, key string, path string) {
-// c.UI.Info(fmt.Sprintf("Store secret : %s %s %s", bucket, key, path))
-// file, err := os.Open(path)
-// if err != nil {
-// 	c.UI.Error(err.Error())
-// 	return
-// }
-// s3Client := eaws.GetS3Client(config)
-// result, err := s3Client.PutObject(&s3.PutObjectInput{
-// 	Bucket: &bucket,
-// 	Key:    aws.String(key),
-// 	Body:   file,
-// })
-// if err != nil {
-// 	c.UI.Error(err.Error())
-// 	return
-// }
-// log.Printf("[DEBUG] %s", awsutil.Prettify(result))
-// c.UI.Output(fmt.Sprintf("Uploaded: %s : %s", path, result))
-// }
-
-func (c *SecretCommand) doDelete(client *Client, config *aws.Config, bucket string, key string) {
+func (c *SecretCommand) doDelete(client *Client, key string) {
 	c.UI.Info(fmt.Sprintf("Delete secret with key %s", key))
-	client.Storage.Delete(bucket, []byte(key))
+	client.Storage.Delete([]byte(key))
 	c.UI.Output("Deleted")
 }
 
-func (c *SecretCommand) doList(client *Client, config *aws.Config, bucket string) {
+func (c *SecretCommand) doList(client *Client) {
 	c.UI.Info(fmt.Sprintf("List secrets :"))
-	secrets, err := client.Storage.List(bucket)
+	secrets, err := client.Storage.List()
 	if err != nil {
 		c.UI.Error(err.Error())
 		return
