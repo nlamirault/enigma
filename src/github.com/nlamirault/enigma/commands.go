@@ -25,15 +25,15 @@ import (
 // Commands is the mapping of all the available Terraform commands.
 var (
 	Commands map[string]cli.CommandFactory
-	Ui       cli.Ui
+	UI       cli.Ui
 )
 
-type Meta struct {
-	UI cli.Ui
-}
+// type Meta struct {
+// 	UI cli.Ui
+// }
 
 func init() {
-	Ui = &cli.ColoredUi{
+	UI = &cli.ColoredUi{
 		Ui: &cli.BasicUi{
 			Writer:      os.Stdout,
 			Reader:      os.Stdin,
@@ -47,12 +47,12 @@ func init() {
 	Commands = map[string]cli.CommandFactory{
 		"bucket": func() (cli.Command, error) {
 			return &command.BucketCommand{
-				UI: Ui,
+				UI: UI,
 			}, nil
 		},
 		"secret": func() (cli.Command, error) {
 			return &command.SecretCommand{
-				UI: Ui,
+				UI: UI,
 			}, nil
 		},
 	}

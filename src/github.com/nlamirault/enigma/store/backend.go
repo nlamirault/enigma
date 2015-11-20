@@ -43,6 +43,7 @@ type StorageBackend interface {
 	List(bucket string) ([]string, error)
 }
 
+// New returns a new storage backend using the label
 func New(label string) (StorageBackend, error) {
 	if constructor, present := backends[label]; present {
 		return constructor()

@@ -50,6 +50,7 @@ func (s *S3) Name() string {
 	return s3Label
 }
 
+// List returns all secrets
 func (s *S3) List(bucket string) ([]string, error) {
 	var l []string
 	log.Printf("[DEBUG] S3 list secrets %s", bucket)
@@ -68,6 +69,7 @@ func (s *S3) List(bucket string) ([]string, error) {
 	return l, nil
 }
 
+// Put a value at the specified key
 func (s *S3) Put(bucket string, key []byte, value []byte) error {
 	log.Printf("[DEBUG] S3 Put : %s %v %v", bucket, string(key), string(value))
 	resp, err := s.Client.PutObject(&s3.PutObjectInput{
@@ -79,6 +81,7 @@ func (s *S3) Put(bucket string, key []byte, value []byte) error {
 	return err
 }
 
+// Get a value given its key
 func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
 	log.Printf("[DEBUG] S3 Get : %s %v", bucket, string(key))
 	resp, err := s.Client.GetObject(&s3.GetObjectInput{
@@ -94,6 +97,7 @@ func (s *S3) Get(bucket string, key []byte) ([]byte, error) {
 	return blob, nil
 }
 
+// Delete the value at the specified key
 func (s *S3) Delete(bucket string, key []byte) error {
 	log.Printf("[DEBUG] S3 Delete : %s %v", bucket, string(key))
 	resp, err := s.Client.DeleteObject(&s3.DeleteObjectInput{

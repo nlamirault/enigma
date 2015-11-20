@@ -30,10 +30,12 @@ import (
 	//"github.com/nlamirault/enigma/store"
 )
 
+// SecretCommand defines the CLI command to manage secrets
 type SecretCommand struct {
 	UI cli.Ui
 }
 
+// Help display help message about the command
 func (c *SecretCommand) Help() string {
 	helpText := `
 Usage: enigma secret [options] action
@@ -55,10 +57,12 @@ Action :
 	return strings.TrimSpace(helpText)
 }
 
+// Synopsis return the command message
 func (c *SecretCommand) Synopsis() string {
 	return "Manage secrets from Amazon S3"
 }
 
+// Run launch the command
 func (c *SecretCommand) Run(args []string) int {
 	var debug bool
 	var bucket, region, key, text, keysManager string

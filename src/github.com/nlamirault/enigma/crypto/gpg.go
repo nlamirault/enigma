@@ -56,10 +56,12 @@ func NewGpg() KeyManager {
 	}
 }
 
+// Name return the GPG name provider
 func (g *Gpg) Name() string {
 	return gpgLabel
 }
 
+// Encrypt encrypts a message
 func (g *Gpg) Encrypt(b []byte) ([]byte, error) {
 	log.Printf("[DEBUG] Open public keyring %s", g.PublicKeyring)
 	publicRingBuffer, err := os.Open(g.PublicKeyring)
@@ -100,6 +102,7 @@ func (g *Gpg) Encrypt(b []byte) ([]byte, error) {
 
 }
 
+// Decrypt decrypt an encrypted message
 func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 
 	// Open the private key file

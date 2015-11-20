@@ -28,10 +28,12 @@ import (
 	// "github.com/nlamirault/enigma/store"
 )
 
+// BucketCommand defines the CLI command to manage buckets
 type BucketCommand struct {
 	UI cli.Ui
 }
 
+// Help display help message about the command
 func (c *BucketCommand) Help() string {
 	helpText := `
 Usage: enigma bucket [options] action
@@ -48,10 +50,12 @@ Action :
 	return strings.TrimSpace(helpText)
 }
 
+// Synopsis return the command message
 func (c *BucketCommand) Synopsis() string {
 	return "Manage buckets from Amazon S3"
 }
 
+// Run launch the command
 func (c *BucketCommand) Run(args []string) int {
 	// 	var debug bool
 	// 	var bucket, region string
