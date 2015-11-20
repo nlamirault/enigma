@@ -17,8 +17,6 @@ package command
 import (
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-
 	"github.com/nlamirault/enigma/crypto"
 	"github.com/nlamirault/enigma/logging"
 	"github.com/nlamirault/enigma/store"
@@ -44,17 +42,11 @@ func checkArguments(args ...string) bool {
 	return true
 }
 
-func getAWSConfig(region string, debug bool) *aws.Config {
+func setLogging(debug bool) {
 	if debug {
 		logging.SetLogging("DEBUG")
-		return &aws.Config{
-			Region:   aws.String(region),
-			LogLevel: aws.LogLevel(aws.LogDebugWithHTTPBody),
-		}
-	}
-	logging.SetLogging("INFO")
-	return &aws.Config{
-		Region: aws.String(region),
+	} else {
+		logging.SetLogging("INFO")
 	}
 }
 

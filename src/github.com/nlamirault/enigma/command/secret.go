@@ -76,12 +76,8 @@ func (c *SecretCommand) Run(args []string) int {
 
 	f.BoolVar(&debug, "debug", false, "Debug mode enabled")
 	f.StringVar(&config, "config", defaultConfigFile, "Configuration filename")
-	// f.StringVar(&bucket, "bucket", "", "Glacier vault's bucket")
-	// f.StringVar(&region, "region", "eu-west-1", "AWS region name")
 	f.StringVar(&key, "key", "", "Key for store data")
 	f.StringVar(&text, "text", "", "Text to store")
-	// f.StringVar(&keysManager, "keys-manager", "kms", "Keys Manager")
-	//f.StringVar(&action, "action", "", "Action to perform")
 
 	if err := f.Parse(args); err != nil {
 		return 1
@@ -91,6 +87,7 @@ func (c *SecretCommand) Run(args []string) int {
 		f.Usage()
 		return 1
 	}
+	setLogging(debug)
 
 	client, err := NewClient(config)
 	if err != nil {
@@ -98,21 +95,12 @@ func (c *SecretCommand) Run(args []string) int {
 		return 1
 	}
 
-	//awsConfig := getAWSConfig(region, debug)
-
 	action := args[0]
 	//fmt.Printf("Action: %s\n", action)
 
 	switch action {
 	case "list":
-		// valid := checkArguments(bucket, region)
-		// if !valid {
-		// 	f.Usage()
-		// 	c.UI.Error(fmt.Sprintf(
-		// 		"\nSecret expects arguments: bucket and region."))
-		// 	return 1
-		// }
-		c.doList(client) //, awsConfig, bucket)
+		c.doList(client)
 	case "delete":
 		valid := checkArguments(key)
 		if !valid {
@@ -121,7 +109,7 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: key."))
 			return 1
 		}
-		c.doDelete(client, key) //awsConfig, bucket, key)
+		c.doDelete(client, key)
 	case "put":
 		valid := checkArguments(key, text)
 		if !valid {
@@ -130,7 +118,7 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: key and text."))
 			return 1
 		}
-		c.doPutText(client, key, text) //awsConfig, bucket, key, text)
+		c.doPutText(client, key, text)
 	case "get":
 		valid := checkArguments(key)
 		if !valid {
@@ -139,7 +127,7 @@ func (c *SecretCommand) Run(args []string) int {
 				"\nSecret expects arguments: key."))
 			return 1
 		}
-		c.doGetText(client, key) //awsConfig, bucket, key)
+		c.doGetText(client, key)
 	default:
 		f.Usage()
 	}
@@ -153,8 +141,10 @@ func (c *SecretCommand) doGetText(client *Client, key string) {
 		c.UI.Error(err.Error())
 		return
 	}
-
-	//keyID := getKeyID()
+	if len(blob) == 0 {
+		c.UI.Output(fmt.Sprintf("No value with key %s", key))
+		return
+	}
 	decrypted, err := client.Keys.Decrypt(blob)
 	if err != nil {
 		c.UI.Error(err.Error())
@@ -165,8 +155,6 @@ func (c *SecretCommand) doGetText(client *Client, key string) {
 
 func (c *SecretCommand) doPutText(client *Client, key string, text string) {
 	c.UI.Info(fmt.Sprintf("Store secret text %s with key %s", text, key))
-
-	//keyID := getKeyID()
 	output, err := client.Keys.Encrypt([]byte(text))
 	if err != nil {
 		c.UI.Error(err.Error())

@@ -91,10 +91,11 @@ func (db *BoltDB) Get(key []byte) ([]byte, error) {
 	db.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.BucketName))
 		b.ForEach(func(k, v []byte) error {
-			// log.Printf("[BoltDB] Entry : %s %s", string(k), string(v))
+			//log.Printf("[BoltDB] Entry : %s %s", string(k), string(v))
 			if string(k) == string(key) {
 				//log.Printf("[DEBUG] Find : %s", string(v))
 				value = v
+				return nil
 			}
 			return nil
 		})
