@@ -92,7 +92,7 @@ func (c *SecretCommand) Run(args []string) int {
 		return 1
 	}
 
-	client, err := NewClient(config, "kms", "s3")
+	client, err := NewClient(config)
 	if err != nil {
 		c.UI.Error(err.Error())
 		return 1

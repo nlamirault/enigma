@@ -65,16 +65,16 @@ type Client struct {
 }
 
 // NewClient creates a new instance of Client.
-func NewClient(filename string, keysLabel string, storageLabel string) (*Client, error) {
+func NewClient(filename string) (*Client, error) {
 	conf, err := config.LoadFileConfig(filename)
 	if err != nil {
 		return nil, err
 	}
-	manager, err := crypto.New("gpg")
+	manager, err := crypto.New(conf.Encryption)
 	if err != nil {
 		return nil, err
 	}
-	storage, err := store.New("boltdb", conf)
+	storage, err := store.New(conf.Backend, conf)
 	if err != nil {
 		return nil, err
 	}
