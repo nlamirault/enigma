@@ -17,7 +17,7 @@ package store
 import (
 	"fmt"
 	"log"
-	"path/filepath"
+	//"path/filepath"
 
 	"github.com/boltdb/bolt"
 
@@ -43,7 +43,8 @@ type BoltDB struct {
 
 // NewBoltDB opens a new BoltDB connection to the specified path and bucket
 func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
-	f := filepath.Join(conf.BoltDB.Directory, "enigma.db")
+	//f := filepath.Join(conf.BoltDB.Directory, "enigma.db")
+	f := conf.BoltDB.File
 	log.Printf("[DEBUG] Init BoltDB storage : %v", f)
 	db, err := bolt.Open(f, 0600, nil)
 	if err != nil {
@@ -58,7 +59,7 @@ func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
 	})
 	return &BoltDB{
 		DB:         db,
-		Path:       conf.BoltDB.Directory,
+		Path:       conf.BoltDB.File,
 		BucketName: conf.BoltDB.Bucket,
 	}, nil
 }

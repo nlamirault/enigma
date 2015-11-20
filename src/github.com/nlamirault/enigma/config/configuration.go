@@ -64,8 +64,8 @@ type KmsConfiguration struct {
 
 // BoltDBConfiguration defines the configuration for BoltDB storage backend
 type BoltDBConfiguration struct {
-	Bucket    string
-	Directory string
+	Bucket string
+	File   string
 }
 
 // S3Configuration defines the configuration for S3 storage backend

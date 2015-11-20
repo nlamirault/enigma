@@ -13,11 +13,13 @@ This tool is a personal safe.
 
 ## Storage backend
 
-- [Amazon S3][] to store secrets encrypted
+- [Amazon S3][]
+- [BoltDB][]
 
 
 ## Secret provider
-- [Amazon KMS][] to manage encryption keys which encrypt/decrypt your secrets
+- [Amazon KMS][]
+- [GPG][]
 
 
 ## Configuration
@@ -130,3 +132,5 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [Amazon S3]:https://aws.amazon.com/s3/
 [Amazon KMS]: https://aws.amazon.com/kms/
+[BoltDB]: https://github.com/boltdb/bolt
+[GPG]: https://www.gnupg.org/

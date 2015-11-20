@@ -14,55 +14,64 @@
 
 package store
 
-// import (
-// 	// "fmt"
-// 	"io/ioutil"
-// 	"os"
-// 	"testing"
+import (
+	// "fmt"
+	"io/ioutil"
+	"os"
+	"testing"
 
-// 	// "github.com/boltdb/bolt"
-// )
+	"github.com/nlamirault/enigma/config"
+)
 
-// // tempfile returns a temporary file path.
-// func tempfile() string {
-// 	f, _ := ioutil.TempFile("", "boltdb-")
-// 	f.Close()
-// 	os.Remove(f.Name())
-// 	return f.Name()
-// }
+// tempfile returns a temporary file path.
+func tempfile() string {
+	f, _ := ioutil.TempFile("", "boltdb-")
+	f.Close()
+	os.Remove(f.Name())
+	return f.Name()
+}
 
-// // Ensure that gets a non-existent key returns nil.
-// func TestBoltDB_Get_NonExistent(t *testing.T) {
-// 	db, err := NewBoltDB(tempfile())
-// 	if err != nil {
-// 		t.Fatalf("Can't create BoltDB test database.")
-// 	}
-// 	defer db.Close()
-// 	value, err := db.Get([]byte("foo"))
-// 	if err != nil {
-// 		t.Fatalf("Can't retrieve BoltDB key.")
-// 	}
-// 	// fmt.Println("Value: ", string(value))
-// 	if value != nil {
-// 		t.Fatalf("Error retrieve invalid key.")
-// 	}
-// }
+// Ensure that gets a non-existent key returns nil.
+func TestBoltDB_Get_NonExistent(t *testing.T) {
+	db, err := NewBoltDB(&config.Configuration{
+		Backend: "boltdb",
+		BoltDB: &config.BoltDBConfiguration{
+			Bucket: "enigma-ut",
+			File:   tempfile(),
+		},
+	})
+	if err != nil {
+		t.Fatalf("Can't create BoltDB test database.")
+	}
+	value, err := db.Get([]byte("foo"))
+	if err != nil {
+		t.Fatalf("Can't retrieve BoltDB key.")
+	}
+	// fmt.Println("Value: ", string(value))
+	if value != nil {
+		t.Fatalf("Error retrieve invalid key.")
+	}
+}
 
-// // Ensure that that gets an existent key returns value.
-// func TestBoltDB_Get_Existent(t *testing.T) {
-// 	db, err := NewBoltDB(tempfile())
-// 	if err != nil {
-// 		t.Fatalf("Can't create BoltDB test database.")
-// 	}
-// 	defer db.Close()
-// 	//addEntry(db.DB, "foo", "bar")
-// 	db.Put([]byte("foo"), []byte("bar"))
-// 	value, err := db.Get([]byte("foo"))
-// 	if err != nil {
-// 		t.Fatalf("Can't retrieve BoltDB key.")
-// 	}
-// 	// fmt.Println("Value: ", string(value))
-// 	if string(value) != "bar" {
-// 		t.Fatalf("Error retrieve invalid value.")
-// 	}
-// }
+// Ensure that that gets an existent key returns value.
+func TestBoltDB_Get_Existent(t *testing.T) {
+	db, err := NewBoltDB(&config.Configuration{
+		Backend: "boltdb",
+		BoltDB: &config.BoltDBConfiguration{
+			Bucket: "enigma-ut",
+			File:   tempfile(),
+		},
+	})
+	if err != nil {
+		t.Fatalf("Can't create BoltDB test database.")
+	}
+	db.Put([]byte("foo"), []byte("bar"))
+	value, err := db.Get([]byte("foo"))
+	if err != nil {
+		t.Fatalf("Can't retrieve BoltDB key.")
+	}
+	// fmt.Println("Value: ", string(value))
+	if string(value) != "bar" {
+		t.Fatalf("Error retrieve invalid value.")
+	}
+}

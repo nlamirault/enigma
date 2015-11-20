@@ -47,7 +47,7 @@ region = "eu-west-1"
 bucket = "enigma"
 
 [boltdb]
-directory = "/tmp"
+file = "/tmp/ut.db"
 bucket = "enigma"`)
 	err = ioutil.WriteFile(templateFile.Name(), data, 0700)
 	if err != nil {
@@ -67,7 +67,7 @@ bucket = "enigma"`)
 
 	// Storage
 	if configuration.BoltDB.Bucket != "enigma" ||
-		configuration.BoltDB.Directory != "/tmp" {
+		configuration.BoltDB.File != "/tmp/ut.db" {
 		t.Fatalf("Configuration BoldDB failed")
 	}
 	if configuration.S3.Bucket != "enigma" ||
