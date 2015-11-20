@@ -30,6 +30,7 @@ type Configuration struct {
 
 	Kms *KmsConfiguration
 	Gpg *GpgConfiguration
+	Aes *AesConfiguration
 }
 
 // New returns a Configuration with default values
@@ -39,6 +40,7 @@ func New() *Configuration {
 		Encryption: "gpg",
 		Gpg:        &GpgConfiguration{},
 		BoltDB:     &BoltDBConfiguration{},
+		Aes:        &AesConfiguration{},
 	}
 }
 
@@ -60,6 +62,11 @@ type GpgConfiguration struct {
 type KmsConfiguration struct {
 	Region string
 	KeyID  string
+}
+
+// AesConfiguration defines the configuration for AES provider
+type AesConfiguration struct {
+	Key string
 }
 
 // BoltDBConfiguration defines the configuration for BoltDB storage backend
