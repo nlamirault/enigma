@@ -2,8 +2,6 @@
 
 [![License Apache 2][badge-license]](LICENSE)
 
-This tool is a personal safe using [Amazon S3][] and [Amazon KMS][]
-
 Master :
 * [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/master.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/master)
 
@@ -11,46 +9,98 @@ Develop :
 * [![Circle CI](https://circleci.com/gh/nlamirault/enigma/tree/develop.svg?style=svg)](https://circleci.com/gh/nlamirault/enigma/tree/develop)
 
 
-## Usage
+This tool is a personal safe.
 
-Setup your AWS credentials :
+## Storage backend
 
-    $ export AWS_ACCESS_KEY_ID='AKID'
-    $ export AWS_SECRET_ACCESS_KEY='SECRET'
+- [Amazon S3][]
+- [BoltDB][]
 
-Creates a KMS key via the AWS Console and store its ID (a UUID) in an environment variable:
 
-    $ export ENIGMA_KEYID = "be3338c8-4e4e-2384-644f-1ac0af044fe4"
+## Secret provider
+- [Amazon KMS][]
+- [GPG][]
+- [AES][]
 
-Initialize your bucket into S3 :
 
-    $ enigma bucket --bucket=my-enigma-bucket create
-    Create bucket : my-enigma-bucket
-    Created: http://my-enigma-bucket.s3.amazonaws.com/
+## Configuration
 
-Store a text :
 
-    $ enigma secret --bucket=my-enigma-bucket --key=foo --text="A text for my enigma" put-text
-    Store secret text A text for my enigma with key foo
-    Successfully uploaded data with key foo
+### KMS
 
-Check your enigma :
+To use the Amazon KMS, :
 
-    $ enigma bucket --bucket=my-enigma-bucket list
-    List bucket secrets : my-enigma-bucket
-    - foo
+* Creates a KMS key via the AWS Console and store its ID (a UUID)
+* Setup the AWS region
 
-Retrieve your data :
+* Setup into the configuration file :
 
-    $ enigma secret --bucket=my-enigma-bucket --key=foo get-text
-    Retrive secret text for key : foo
-    Decrypted: A text for my enigma
+        [kms]
+        region = "eu-west-1"
+        keyID = "xxxx-xxxx-xxxx"
 
-Delete your bucket :
+### S3
 
-    $ enigma bucket --bucket=my-enigma-bucket delete
-    Delete bucket my-enigma-bucket
-    Deleted
+* Initialize your bucket into S3 :
+
+        $ enigma bucket --bucket=my-enigma-bucket create
+        Create bucket : my-enigma-bucket
+        Created: http://my-enigma-bucket.s3.amazonaws.com/
+
+* Setup into the configuration file :
+
+        [s3]
+        region = "eu-west-1"
+        bucket = "my-enigma-bucket"
+
+
+### GPG
+
+Specify the email to use with your public key:
+
+        [gpg]
+        email = "foo.bar@gmail.com"
+
+### BoltDB
+
+You must specify where database file will be saved and the bucket name :
+
+        [boltdb]
+        file = "/tmp/enigma.db"
+        bucket = "enigma"
+
+
+
+### Example
+
+```toml
+# enigma.toml
+
+# Encryption provider
+backend = "gpg"
+
+# Storage backend
+storage = "boltdb"
+
+[gpg]
+email = "foo.bar@gmail.com"
+
+[kms]
+region = "eu-west-1"
+keyID = "xxxx-xxxx-xxxx"
+
+[aes]
+key = "abcdefghijklmnop"
+
+[s3]
+region = "eu-west-1"
+bucket = "enigma"
+
+[boltdb]
+file = "/tmp/enigma.db"
+bucket = "enigma"
+
+```
 
 
 ## Development
@@ -91,3 +141,6 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [Amazon S3]:https://aws.amazon.com/s3/
 [Amazon KMS]: https://aws.amazon.com/kms/
+[BoltDB]: https://github.com/boltdb/bolt
+[GPG]: https://www.gnupg.org/
+[AES]: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard

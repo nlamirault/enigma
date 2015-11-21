@@ -15,12 +15,13 @@
 package command
 
 import (
-	"os"
 	"strings"
 
-	"github.com/aws/aws-sdk-go/aws"
-
+	"github.com/nlamirault/enigma/crypto"
 	"github.com/nlamirault/enigma/logging"
+	"github.com/nlamirault/enigma/store"
+
+	"github.com/nlamirault/enigma/config"
 )
 
 // generalOptionsUsage returns the usage documenation for commonly
@@ -28,8 +29,6 @@ import (
 func generalOptionsUsage() string {
 	general := `
         --debug                       Debug mode enabled
-	--bucket=name                 Bucket name
-        --region=name                 Region name
 `
 	return strings.TrimSpace(general)
 }
@@ -43,20 +42,36 @@ func checkArguments(args ...string) bool {
 	return true
 }
 
-func getAWSConfig(region string, debug bool) *aws.Config {
+func setLogging(debug bool) {
 	if debug {
 		logging.SetLogging("DEBUG")
-		return &aws.Config{
-			Region:   aws.String(region),
-			LogLevel: aws.LogLevel(aws.LogDebugWithHTTPBody),
-		}
-	}
-	logging.SetLogging("INFO")
-	return &aws.Config{
-		Region: aws.String(region),
+	} else {
+		logging.SetLogging("INFO")
 	}
 }
 
-func getKeyID() string {
-	return os.Getenv("ENIGMA_KEYID")
+// Client provides a keys manager and storage backend
+type Client struct {
+	Keys    crypto.KeyManager
+	Storage store.StorageBackend
+}
+
+// NewClient creates a new instance of Client.
+func NewClient(filename string) (*Client, error) {
+	conf, err := config.LoadFileConfig(filename)
+	if err != nil {
+		return nil, err
+	}
+	manager, err := crypto.New(conf)
+	if err != nil {
+		return nil, err
+	}
+	storage, err := store.New(conf)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{
+		Keys:    manager,
+		Storage: storage,
+	}, nil
 }

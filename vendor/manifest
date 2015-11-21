@@ -2,93 +2,131 @@
 	"version": 0,
 	"dependencies": [
 		{
+			"importpath": "github.com/BurntSushi/toml",
+			"repository": "https://github.com/BurntSushi/toml",
+			"revision": "056c9bc7be7190eaa7715723883caffa5f8fa3e4",
+			"branch": "master"
+		},
+		{
 			"importpath": "github.com/aws/aws-sdk-go/aws",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
 			"path": "/aws"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/endpoints",
+			"importpath": "github.com/aws/aws-sdk-go/aws/session",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/endpoints"
+			"path": "/aws/session"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/json/jsonutil",
+			"importpath": "github.com/aws/aws-sdk-go/private/endpoints",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/json/jsonutil"
+			"path": "/private/endpoints"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/jsonrpc",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/json/jsonutil",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/jsonrpc"
+			"path": "/private/protocol/json/jsonutil"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/query",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/jsonrpc",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/query"
+			"path": "/private/protocol/jsonrpc"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/rest",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/query",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/rest"
+			"path": "/private/protocol/query"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/restxml",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/rest",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/restxml"
+			"path": "/private/protocol/rest"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/protocol/xml/xmlutil",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/restxml",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/protocol/xml/xmlutil"
+			"path": "/private/protocol/restxml"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/internal/signer/v4",
+			"importpath": "github.com/aws/aws-sdk-go/private/protocol/xml/xmlutil",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
-			"path": "/internal/signer/v4"
+			"path": "/private/protocol/xml/xmlutil"
+		},
+		{
+			"importpath": "github.com/aws/aws-sdk-go/private/signer/v4",
+			"repository": "https://github.com/aws/aws-sdk-go",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
+			"branch": "master",
+			"path": "/private/signer/v4"
+		},
+		{
+			"importpath": "github.com/aws/aws-sdk-go/private/waiter",
+			"repository": "https://github.com/aws/aws-sdk-go",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
+			"branch": "master",
+			"path": "/private/waiter"
 		},
 		{
 			"importpath": "github.com/aws/aws-sdk-go/service/kms",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
 			"path": "/service/kms"
 		},
 		{
 			"importpath": "github.com/aws/aws-sdk-go/service/s3",
 			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"revision": "c676927b4f3771ff71c0c0b0cb8cf4575d8d0a65",
 			"branch": "master",
 			"path": "/service/s3"
 		},
 		{
-			"importpath": "github.com/aws/aws-sdk-go/service/sts",
-			"repository": "https://github.com/aws/aws-sdk-go",
-			"revision": "7ab6754ddaaa7972ac1c896ddd7f796cc726e79d",
+			"importpath": "github.com/boltdb/bolt",
+			"repository": "https://github.com/boltdb/bolt",
+			"revision": "0b00effdd7a8270ebd91c24297e51643e370dd52",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/docker/docker/pkg/homedir",
+			"repository": "https://github.com/docker/docker",
+			"revision": "c32f8bb36a5f1b2fe0586a1e080c14d8a6b68610",
 			"branch": "master",
-			"path": "/service/sts"
+			"path": "/pkg/homedir"
+		},
+		{
+			"importpath": "github.com/go-ini/ini",
+			"repository": "https://github.com/go-ini/ini",
+			"revision": "2e44421e256d82ebbf3d4d4fcabe8930b905eff3",
+			"branch": "v1"
 		},
 		{
 			"importpath": "github.com/hashicorp/logutils",
 			"repository": "https://github.com/hashicorp/logutils",
 			"revision": "0dc08b1671f34c4250ce212759ebd880f743d883",
+			"branch": "master"
+		},
+		{
+			"importpath": "github.com/jmespath/go-jmespath",
+			"repository": "https://github.com/jmespath/go-jmespath",
+			"revision": "3433f3ea46d9f8019119e7dd41274e112a2359a9",
 			"branch": "master"
 		},
 		{
@@ -98,15 +136,51 @@
 			"branch": "master"
 		},
 		{
-			"importpath": "github.com/vaughan0/go-ini",
-			"repository": "https://github.com/vaughan0/go-ini",
-			"revision": "a98ad7ee00ec53921f08832bc06ecf7fd600e6a1",
-			"branch": "master"
+			"importpath": "github.com/opencontainers/runc/libcontainer/user",
+			"repository": "https://github.com/opencontainers/runc",
+			"revision": "776791463d2c6ef5a59931c89d5ac8527bb0e46a",
+			"branch": "master",
+			"path": "/libcontainer/user"
+		},
+		{
+			"importpath": "golang.org/x/crypto/cast5",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/cast5"
+		},
+		{
+			"importpath": "golang.org/x/crypto/nacl/secretbox",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/nacl/secretbox"
+		},
+		{
+			"importpath": "golang.org/x/crypto/openpgp",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/openpgp"
+		},
+		{
+			"importpath": "golang.org/x/crypto/poly1305",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/poly1305"
+		},
+		{
+			"importpath": "golang.org/x/crypto/salsa20/salsa",
+			"repository": "https://go.googlesource.com/crypto",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
+			"branch": "master",
+			"path": "/salsa20/salsa"
 		},
 		{
 			"importpath": "golang.org/x/crypto/ssh/terminal",
 			"repository": "https://go.googlesource.com/crypto",
-			"revision": "c8b9e6388ef638d5a8a9d865c634befdc46a6784",
+			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
 			"branch": "master",
 			"path": "/ssh/terminal"
 		}

@@ -14,74 +14,74 @@
 
 package command
 
-import (
-	"testing"
+// import (
+// 	"testing"
 
-	"github.com/mitchellh/cli"
-)
+// 	"github.com/mitchellh/cli"
+// )
 
-func TestBucketWithoutAction(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &BucketCommand{
-		UI: ui,
-	}
+// func TestBucketWithoutAction(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &BucketCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestBucketWithoutBucket(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &BucketCommand{
-		UI: ui,
-	}
+// func TestBucketWithoutBucket(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &BucketCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-		"--action", "get-text",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 		"--action", "get-text",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestBucketWithoutRegion(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &BucketCommand{
-		UI: ui,
-	}
+// func TestBucketWithoutRegion(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &BucketCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--region", "region1",
-		"--action", "get-text",
-	}
+// 	args := []string{
+// 		"--region", "region1",
+// 		"--action", "get-text",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }
 
-func TestBucketWithInvalidAction(t *testing.T) {
-	ui := new(cli.MockUi)
-	c := &BucketCommand{
-		UI: ui,
-	}
+// func TestBucketWithInvalidAction(t *testing.T) {
+// 	ui := new(cli.MockUi)
+// 	c := &BucketCommand{
+// 		UI: ui,
+// 	}
 
-	args := []string{
-		"--bucket", "foo",
-		"--region", "region1",
-		"--action", "reset",
-	}
+// 	args := []string{
+// 		"--bucket", "foo",
+// 		"--region", "region1",
+// 		"--action", "reset",
+// 	}
 
-	if code := c.Run(args); code != 1 {
-		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
-	}
-}
+// 	if code := c.Run(args); code != 1 {
+// 		t.Fatalf("bad: %d\n\n%s", code, ui.ErrorWriter.String())
+// 	}
+// }

@@ -1,6 +1,14 @@
 ChangeLog
 =============
 
+# Version 0.4.0 (11/21/2015)
+
+- Add AES provider
+- Setup using configuration file
+- Add BoltDB storage backend
+- Add GPG provider
+- Setup KMS envelope encryption
+
 # Version 0.3.0 (11/19/2015)
 
 - Add delete secret feature
