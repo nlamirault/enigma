@@ -13,8 +13,9 @@ This tool is a personal safe.
 
 ## Storage backend
 
-- [Amazon S3][]
 - [BoltDB][]
+- [Amazon S3][]
+- [Google Cloud Storage][]
 
 
 ## Secret provider
@@ -139,8 +140,11 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 [badge-license]: https://img.shields.io/badge/license-Apache2-green.svg?style=flat
 
-[Amazon S3]:https://aws.amazon.com/s3/
-[Amazon KMS]: https://aws.amazon.com/kms/
 [BoltDB]: https://github.com/boltdb/bolt
+
+[Amazon S3]:https://aws.amazon.com/s3/
+[Google Cloud Storage]: https://cloud.google.com/storage/
+
+[Amazon KMS]: https://aws.amazon.com/kms/
 [GPG]: https://www.gnupg.org/
 [AES]: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard

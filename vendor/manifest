@@ -183,6 +183,61 @@
 			"revision": "346896d57731cb5670b36c6178fc5519f3225980",
 			"branch": "master",
 			"path": "/ssh/terminal"
+		},
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://go.googlesource.com/net",
+			"revision": "341cd0845b5a19165f12976d7915847a71037135",
+			"branch": "master",
+			"path": "/context"
+		},
+		{
+			"importpath": "golang.org/x/oauth2",
+			"repository": "https://go.googlesource.com/oauth2",
+			"revision": "2baa8a1b9338cf13d9eeb27696d761155fa480be",
+			"branch": "master"
+		},
+		{
+			"importpath": "golang.org/x/oauth2/google",
+			"repository": "https://go.googlesource.com/oauth2",
+			"revision": "2baa8a1b9338cf13d9eeb27696d761155fa480be",
+			"branch": "master",
+			"path": "/google"
+		},
+		{
+			"importpath": "google.golang.org/api/gensupport",
+			"repository": "https://code.googlesource.com/google-api-go-client",
+			"revision": "b2be3c69519a81292faa7016d3c87f8b68c6f0d9",
+			"branch": "master",
+			"path": "/gensupport"
+		},
+		{
+			"importpath": "google.golang.org/api/googleapi",
+			"repository": "https://code.googlesource.com/google-api-go-client",
+			"revision": "b2be3c69519a81292faa7016d3c87f8b68c6f0d9",
+			"branch": "master",
+			"path": "/googleapi"
+		},
+		{
+			"importpath": "google.golang.org/api/storage/v1",
+			"repository": "https://code.googlesource.com/google-api-go-client",
+			"revision": "b2be3c69519a81292faa7016d3c87f8b68c6f0d9",
+			"branch": "master",
+			"path": "/storage/v1"
+		},
+		{
+			"importpath": "google.golang.org/cloud/compute/metadata",
+			"repository": "https://code.googlesource.com/gocloud",
+			"revision": "392f2aeac3d98ee75147c8cd8f92e4f65104b0bb",
+			"branch": "master",
+			"path": "/compute/metadata"
+		},
+		{
+			"importpath": "google.golang.org/cloud/internal",
+			"repository": "https://code.googlesource.com/gocloud",
+			"revision": "392f2aeac3d98ee75147c8cd8f92e4f65104b0bb",
+			"branch": "master",
+			"path": "/internal"
 		}
 	]
 }
