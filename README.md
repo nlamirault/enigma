@@ -53,17 +53,21 @@ To use the Amazon KMS, :
 
 ### S3
 
-* Initialize your bucket into S3 :
-
-        $ enigma bucket --bucket=my-enigma-bucket create
-        Create bucket : my-enigma-bucket
-        Created: http://my-enigma-bucket.s3.amazonaws.com/
-
 * Setup into the configuration file :
 
         [s3]
         region = "eu-west-1"
         bucket = "my-enigma-bucket"
+
+* Initialize your bucket into S3 :
+
+        $ enigma bucket --debug create
+        Create bucket
+        2016/01/14 23:45:10 [DEBUG] Amazon S3 Create bucket : cdcdscsdcsd
+        2016/01/14 23:45:11 [DEBUG] Amazon S3 {
+            Location: "http://cdcdscsdcsd.s3.amazonaws.com/"
+        }
+        Bucket successfully created
 
 
 ### GPG
@@ -75,12 +79,18 @@ Specify the email to use with your public key:
 
 ### BoltDB
 
-You must specify where database file will be saved and the bucket name :
+* Setup into the configuration file :
 
         [boltdb]
         file = "/tmp/enigma.db"
         bucket = "enigma"
 
+* Create your bucket :
+
+        $ enigma bucket --debug create
+        2016/01/14 23:57:11 Create /tmp/enigma
+        Create bucket
+        Bucket successfully created
 
 
 ### Example
@@ -106,7 +116,7 @@ key = "abcdefghijklmnop"
 
 [s3]
 region = "eu-west-1"
-bucket = "enigma"
+bucket = "mybucket"
 
 [boltdb]
 file = "/tmp/enigma.db"
