@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ func TestBoltDB_Get_NonExistent(t *testing.T) {
 			File:   tempfile(),
 		},
 	})
+	db.Create()
 	if err != nil {
 		t.Fatalf("Can't create BoltDB test database.")
 	}
@@ -62,6 +63,7 @@ func TestBoltDB_Get_Existent(t *testing.T) {
 			File:   tempfile(),
 		},
 	})
+	db.Create()
 	if err != nil {
 		t.Fatalf("Can't create BoltDB test database.")
 	}

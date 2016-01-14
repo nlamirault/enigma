@@ -1,6 +1,11 @@
 ChangeLog
 =============
 
+# Version 0.5.0 (01/14/2016)
+
+- Update documentation
+- Add bucket creation for storage backends
+
 # Version 0.4.0 (11/21/2015)
 
 - Add AES provider

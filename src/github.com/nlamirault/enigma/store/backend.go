@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,6 +31,12 @@ type StorageBackend interface {
 
 	// Name identify the key manager
 	Name() string
+
+	// Create intialize the storage backend bucket
+	Create() error
+
+	// Destroy remove the storage backend bucket
+	Destroy() error
 
 	// Put a value at the specified key
 	Put(key []byte, value []byte) error
