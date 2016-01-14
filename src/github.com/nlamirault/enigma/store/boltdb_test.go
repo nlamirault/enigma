@@ -40,6 +40,7 @@ func TestBoltDB_Get_NonExistent(t *testing.T) {
 			File:   tempfile(),
 		},
 	})
+	db.Create()
 	if err != nil {
 		t.Fatalf("Can't create BoltDB test database.")
 	}
@@ -62,6 +63,7 @@ func TestBoltDB_Get_Existent(t *testing.T) {
 			File:   tempfile(),
 		},
 	})
+	db.Create()
 	if err != nil {
 		t.Fatalf("Can't create BoltDB test database.")
 	}

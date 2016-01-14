@@ -32,6 +32,12 @@ type StorageBackend interface {
 	// Name identify the key manager
 	Name() string
 
+	// Create intialize the storage backend bucket
+	Create() error
+
+	// Destroy remove the storage backend bucket
+	Destroy() error
+
 	// Put a value at the specified key
 	Put(key []byte, value []byte) error
 

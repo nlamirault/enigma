@@ -15,13 +15,15 @@
 package command
 
 import (
+	"path/filepath"
 	"strings"
 
+	"github.com/docker/docker/pkg/homedir"
+
+	"github.com/nlamirault/enigma/config"
 	"github.com/nlamirault/enigma/crypto"
 	"github.com/nlamirault/enigma/logging"
 	"github.com/nlamirault/enigma/store"
-
-	"github.com/nlamirault/enigma/config"
 )
 
 // generalOptionsUsage returns the usage documenation for commonly
@@ -48,6 +50,11 @@ func setLogging(debug bool) {
 	} else {
 		logging.SetLogging("INFO")
 	}
+}
+
+func getConfigurationFile() string {
+	home := homedir.Get()
+	return filepath.Join(home, ".config/enigma/enigma.toml")
 }
 
 // Client provides a keys manager and storage backend

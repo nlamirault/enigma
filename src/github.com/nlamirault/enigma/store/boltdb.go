@@ -17,7 +17,8 @@ package store
 import (
 	"fmt"
 	"log"
-	//"path/filepath"
+	"os"
+	"path"
 
 	"github.com/boltdb/bolt"
 
@@ -45,18 +46,19 @@ type BoltDB struct {
 func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
 	//f := filepath.Join(conf.BoltDB.Directory, "enigma.db")
 	f := conf.BoltDB.File
-	log.Printf("[DEBUG] BoltDB Init storage : %v", f)
+	directory := path.Dir(f)
+	if _, err := os.Stat(directory); os.IsNotExist(err) {
+		log.Printf("Create %s", directory)
+		err = os.Mkdir(directory, 0755)
+		if err != nil {
+			return nil, err
+		}
+	}
 	db, err := bolt.Open(f, 0600, nil)
 	if err != nil {
 		return nil, err
 	}
-	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(conf.BoltDB.Bucket))
-		if err != nil {
-			return fmt.Errorf("BoltDB Can't create bucket: %s", err)
-		}
-		return nil
-	})
+
 	return &BoltDB{
 		DB:         db,
 		Path:       conf.BoltDB.File,
@@ -67,6 +69,24 @@ func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
 // Name returns BoltDB label
 func (db *BoltDB) Name() string {
 	return boltdbLabel
+}
+
+// Create intialize the storage backend
+func (db *BoltDB) Create() error {
+	return db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte(db.BucketName))
+		if err != nil {
+			return fmt.Errorf("BoltDB Can't create bucket: %s", err)
+		}
+		return nil
+	})
+}
+
+// Destroy remove the storage backend bucket
+func (db *BoltDB) Destroy() error {
+	directory := path.Dir(db.BucketName)
+	log.Printf("Create %s", directory)
+	return nil
 }
 
 // List returns all secrets

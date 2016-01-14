@@ -17,19 +17,9 @@ package command
 import (
 	"flag"
 	"fmt"
-	//"log"
-	//"os"
-	"path/filepath"
 	"strings"
 
-	// "github.com/aws/aws-sdk-go/aws"
-	// "github.com/aws/aws-sdk-go/aws/awsutil"
-	// "github.com/aws/aws-sdk-go/service/s3"
-	"github.com/docker/docker/pkg/homedir"
 	"github.com/mitchellh/cli"
-
-	//"github.com/nlamirault/enigma/crypt"
-	//"github.com/nlamirault/enigma/store"
 )
 
 // SecretCommand defines the CLI command to manage secrets
@@ -71,8 +61,7 @@ func (c *SecretCommand) Run(args []string) int {
 	f := flag.NewFlagSet("secrets", flag.ContinueOnError)
 	f.Usage = func() { c.UI.Error(c.Help()) }
 
-	home := homedir.Get()
-	defaultConfigFile := filepath.Join(home, ".config/enigma/enigma.toml")
+	defaultConfigFile := getConfigurationFile()
 
 	f.BoolVar(&debug, "debug", false, "Debug mode enabled")
 	f.StringVar(&config, "config", defaultConfigFile, "Configuration filename")

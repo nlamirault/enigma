@@ -54,6 +54,47 @@ func (s *S3) Name() string {
 	return s3Label
 }
 
+// Create intialize the storage backend
+func (s *S3) Create() error {
+	log.Printf("[DEBUG] Amazon S3 Create bucket : %s", s.Bucket)
+	resp, err := s.Client.CreateBucket(&s3.CreateBucketInput{
+		Bucket: &s.Bucket,
+	})
+	if err != nil {
+		return err
+	}
+	log.Printf("[DEBUG] Amazon S3 %s", awsutil.Prettify(resp))
+	return nil
+}
+
+// Destroy remove the storage backend bucket
+func (s *S3) Destroy() error {
+	log.Printf("[DEBUG] Amazon S3 Delete bucket objects")
+	objects, err := s.List()
+	if err != nil {
+		return err
+	}
+	for _, key := range objects {
+		resp, err := s.Client.DeleteObject(&s3.DeleteObjectInput{
+			Bucket: &s.Bucket,
+			Key:    aws.String(key),
+		})
+		if err != nil {
+			return err
+		}
+		log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
+	}
+	log.Printf("[DEBUG] Delete bucket")
+	resp, err := s.Client.DeleteBucket(&s3.DeleteBucketInput{
+		Bucket: &s.Bucket,
+	})
+	if err != nil {
+		return err
+	}
+	log.Printf("[DEBUG] Amazon S3 %s", awsutil.Prettify(resp))
+	return nil
+}
+
 // List returns all secrets
 func (s *S3) List() ([]string, error) {
 	var l []string
