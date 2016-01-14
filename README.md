@@ -24,8 +24,19 @@ This tool is a personal safe.
 - [AES][]
 
 
+## Installation
+
+You can download the binaries :
+
+* Architecture i386 [ [linux](https://bintray.com/artifact/download/nlamirault/oss/enigma_linux_386) / [darwin](https://bintray.com/artifact/download/nlamirault/oss/enigma_darwin_386) / [freebsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_freebsd_386) / [netbsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_netbsd_386) / [openbsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_openbsd_386) / [windows](https://bintray.com/artifact/download/nlamirault/oss/enigma_windows_386.exe) ]
+* Architecture amd64 [ [linux](https://bintray.com/artifact/download/nlamirault/oss/enigma_linux_amd64) / [darwin](https://bintray.com/artifact/download/nlamirault/oss/enigma_darwin_amd64) / [freebsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_freebsd_amd64) / [netbsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_netbsd_amd64) / [openbsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_openbsd_amd64) / [windows](https://bintray.com/artifact/download/nlamirault/oss/enigma_windows_amd64.exe) ]
+* Architecture arm [ [linux](https://bintray.com/artifact/download/nlamirault/oss/enigma_linux_arm) / [freebsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_freebsd_arm) / [netbsd](https://bintray.com/artifact/download/nlamirault/oss/enigma_netbsd_arm) ]
+
+
+
 ## Configuration
 
+Enigma configuration use [toml][] format. File is located into `$HOME/.config/enigma/enigma.toml`.
 
 ### KMS
 
@@ -103,6 +114,63 @@ bucket = "enigma"
 
 ```
 
+## Usage
+
+### KMS / BoltDB
+
+* List all secrets:
+
+        $ enigma secret list
+        List secrets :
+
+* Store a new secret :
+
+        $ enigma secret --key="mysecret" --text="mypassword" put
+        Store secret text mypassword with key mysecret
+        Successfully uploaded data with key mysecret
+
+        $ enigma secret list
+        List secrets :
+        - mysecret
+
+* Retrieve a secret :
+
+        $ enigma secret --key="mysecret" get
+        Retrive secret text for key : mysecret
+        Decrypted: mypassword
+
+
+### GPG / BoltDB
+
+* Store a new secret :
+
+        $ enigma secret --debug --key="nicolas" --text="mypassword" put
+        2016/01/14 23:08:04 [DEBUG] Init BoltDB storage : /tmp/enigma.db
+        Store secret text mypassword with key nicolas
+        2016/01/14 23:08:04 [DEBUG] GPG Open public keyring /home/nlamirault/.gnupg/pubring.gpg
+        2016/01/14 23:08:04 [DEBUG] GPG Read public keyring
+        2016/01/14 23:08:04 [DEBUG] GPG Search key into keyring using nicolas.lamirault@gmail.com
+        2016/01/14 23:08:04 [DEBUG] Put : nicolas -----BEGIN PGP MESSAGE-----
+        [...]
+        4AHkPJd4QQaimnFACYR8pTeEUuEgOODO4Arhwt/gDOKYMAIv4ILjI5qsqqWR+qjg
+        zOF8/+Dp5GSbF7vp19ilGb8OubCpgHTiL/fIquGi8AA=
+        =9agp
+        -----END PGP MESSAGE-----
+        Successfully uploaded data with key nicolas
+
+* Retrieve a secret :
+
+        $ bin/enigma secret --debug --key="nicolas" get
+        2016/01/14 23:10:06 [DEBUG] Init BoltDB storage : /tmp/enigma.db
+        Retrive secret text for key : nicolas
+        2016/01/14 23:10:06 [DEBUG] Search entry with key : nicolas
+        2016/01/14 23:10:06 [DEBUG] GPG Search key into keyring using nicolas.lamirault@gmail.com
+        GPG Passphrase:
+        2016/01/14 23:10:11 [DEBUG] GPG Decrypting private key using passphrase
+        2016/01/14 23:10:11 [DEBUG] GPG Finished decrypting private key using passphrase
+        Decrypted: mypassword
+
+
 
 ## Development
 
@@ -148,3 +216,6 @@ Nicolas Lamirault <nicolas.lamirault@gmail.com>
 [Amazon KMS]: https://aws.amazon.com/kms/
 [GPG]: https://www.gnupg.org/
 [AES]: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
+
+
+[toml]: https://github.com/toml-lang/toml

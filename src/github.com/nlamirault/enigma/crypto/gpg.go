@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,14 +67,14 @@ func (g *Gpg) Name() string {
 
 // Encrypt encrypts a message
 func (g *Gpg) Encrypt(b []byte) ([]byte, error) {
-	log.Printf("[DEBUG] Open public keyring %s", g.PublicKeyring)
+	log.Printf("[DEBUG] GPG Open public keyring %s", g.PublicKeyring)
 	publicRingBuffer, err := os.Open(g.PublicKeyring)
 	if err != nil {
 		return nil, fmt.Errorf(
 			"opening public key %s failed: %v", g.PublicKeyring, err)
 	}
 	defer publicRingBuffer.Close()
-	log.Printf("[DEBUG] Read public keyring")
+	log.Printf("[DEBUG] GPG Read public keyring")
 	publicRing, err := openpgp.ReadKeyRing(publicRingBuffer)
 	if err != nil {
 		return nil, err
@@ -126,13 +126,13 @@ func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 	passphrase, err := terminal.ReadPassword(0)
 	fmt.Println("")
 
-	log.Printf("[DEBUG] Decrypting private key using passphrase")
+	log.Printf("[DEBUG] GPG Decrypting private key using passphrase")
 	//passphraseByte := []byte(passphrase)
 	privateKey.PrivateKey.Decrypt(passphrase)
 	for _, subkey := range privateKey.Subkeys {
 		subkey.PrivateKey.Decrypt(passphrase)
 	}
-	log.Printf("[DEBUG] Finished decrypting private key using passphrase")
+	log.Printf("[DEBUG] GPG Finished decrypting private key using passphrase")
 
 	armoredBlock, err := armor.Decode(bytes.NewReader(blob))
 	if err != nil {
@@ -152,7 +152,7 @@ func (g *Gpg) Decrypt(blob []byte) ([]byte, error) {
 }
 
 func getKeyByEmail(keyring openpgp.EntityList, email string) *openpgp.Entity {
-	log.Printf("[DEBUG] Search key into keyring using %s", email)
+	log.Printf("[DEBUG] GPG Search key into keyring using %s", email)
 	for _, entity := range keyring {
 		for _, ident := range entity.Identities {
 			if ident.UserId.Email == email {

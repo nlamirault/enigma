@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ func (k *Kms) Decrypt(blob []byte) ([]byte, error) {
 	res, err := k.client.Decrypt(&kms.DecryptInput{
 		CiphertextBlob: ev.EncryptedKey,
 	})
-	log.Printf("[DEBUG] %s", awsutil.Prettify(res))
+	log.Printf("[DEBUG] Amazon KMS %s", awsutil.Prettify(res))
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (k *Kms) generateEnvelopKey(keyID string) (*kms.GenerateDataKeyOutput, erro
 		KeyId:         aws.String(keyID),
 		NumberOfBytes: aws.Int64(keyLength),
 	})
-	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
+	log.Printf("[DEBUG] Amazon KMS %s", awsutil.Prettify(resp))
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (k *Kms) generateNonce() ([]byte, error) {
 			NumberOfBytes: aws.Int64(nonceLength),
 		},
 	)
-	log.Printf("[DEBUG] %s", awsutil.Prettify(resp))
+	log.Printf("[DEBUG] Amazon KMS %s", awsutil.Prettify(resp))
 	if err != nil {
 		return nil, err
 	}

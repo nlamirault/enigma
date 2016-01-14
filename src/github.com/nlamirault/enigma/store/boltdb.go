@@ -1,4 +1,4 @@
-// Copyright (C) 2015 Nicolas Lamirault <nicolas.lamirault@gmail.com>
+// Copyright (C) 2015, 2016 Nicolas Lamirault <nicolas.lamirault@gmail.com>
 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ type BoltDB struct {
 func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
 	//f := filepath.Join(conf.BoltDB.Directory, "enigma.db")
 	f := conf.BoltDB.File
-	log.Printf("[DEBUG] Init BoltDB storage : %v", f)
+	log.Printf("[DEBUG] BoltDB Init storage : %v", f)
 	db, err := bolt.Open(f, 0600, nil)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func NewBoltDB(conf *config.Configuration) (StorageBackend, error) {
 	db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte(conf.BoltDB.Bucket))
 		if err != nil {
-			return fmt.Errorf("Can't create BoltDB bucket: %s", err)
+			return fmt.Errorf("BoltDB Can't create bucket: %s", err)
 		}
 		return nil
 	})
@@ -87,7 +87,7 @@ func (db *BoltDB) List() ([]string, error) {
 
 // Get a value given its key
 func (db *BoltDB) Get(key []byte) ([]byte, error) {
-	log.Printf("[DEBUG] Search entry with key : %v", string(key))
+	log.Printf("[DEBUG] BoltDB Search entry with key : %v", string(key))
 	var value []byte
 	db.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.BucketName))
@@ -107,7 +107,7 @@ func (db *BoltDB) Get(key []byte) ([]byte, error) {
 
 // Put a value at the specified key
 func (db *BoltDB) Put(key []byte, value []byte) error {
-	log.Printf("[DEBUG] Put : %v %v", string(key), string(value))
+	log.Printf("[DEBUG] BoltDB Put : %v %v", string(key), string(value))
 	return db.DB.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(db.BucketName))
 		b.Put(key, value)
@@ -117,6 +117,6 @@ func (db *BoltDB) Put(key []byte, value []byte) error {
 
 // Delete the value at the specified key
 func (db *BoltDB) Delete(key []byte) error {
-	log.Printf("[DEBUG] Delete : %v", string(key))
+	log.Printf("[DEBUG] BoltDB Delete : %v", string(key))
 	return fmt.Errorf("Not implemented")
 }
