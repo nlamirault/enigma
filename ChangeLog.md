@@ -1,6 +1,11 @@
 ChangeLog
 =============
 
+# Version 0.6.0 (IN PROGRESS)
+
+- Migrate to Glide
+- Update vendoring dependencies
+
 # Version 0.5.0 (01/14/2016)
 
 - Update documentation

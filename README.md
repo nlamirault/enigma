@@ -15,7 +15,6 @@ This tool is a personal safe.
 
 - [BoltDB][]
 - [Amazon S3][]
-- [Google Cloud Storage][]
 
 
 ## Secret provider
@@ -40,7 +39,7 @@ Enigma configuration use [toml][] format. File is located into `$HOME/.config/en
 
 ### KMS
 
-To use the Amazon KMS, :
+To use the Amazon KMS :
 
 * Creates a KMS key via the AWS Console and store its ID (a UUID)
 * Setup the AWS region
