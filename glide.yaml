@@ -1,0 +1,17 @@
+package: github.com/nlamirault/enigma
+import:
+- package: github.com/aws/aws-sdk-go
+  subpackages:
+  - aws
+- package: github.com/boltdb/bolt
+- package: github.com/docker/docker
+  subpackages:
+  - pkg/homedir
+- package: github.com/hashicorp/logutils
+- package: github.com/mitchellh/cli
+- package: github.com/armon/go-radix
+- package: github.com/bgentry/speakeasy
+- package: github.com/mattn/go-isatty
+- package: github.com/opencontainers/runc
+  subpackages:
+  - libcontainer/user
