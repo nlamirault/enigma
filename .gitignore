@@ -1,5 +1,8 @@
-# Emacs
-*~
+# Files
+.DS_Store
+/glide.lock
 
-# Golang
-bin/enigma
+# Editor swap files
+*.swp
+*.swo
+*.swn
