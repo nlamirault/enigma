@@ -78,7 +78,7 @@ init:
 .PHONY: deps
 deps:
 	@echo -e "$(OK_COLOR)[$(APP)] Update dependencies$(NO_COLOR)"
-	@glide up -v -s
+	@glide up -u -v -s
 
 .PHONY: build
 build:
